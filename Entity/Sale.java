@@ -5,5 +5,7 @@ public class Sale {
     int amount;
     int CustomerID;
     String status;
-
+    String saleDate;
 }
+
+

@@ -9,5 +9,6 @@ public class Product {
     int qty;
     String description;
     boolean status;
+    String addedDate;
     
 }
