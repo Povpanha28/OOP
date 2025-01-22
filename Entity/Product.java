@@ -11,4 +11,9 @@ public class Product {
     boolean status;
     String addedDate;
     
+    Product(String name, int id, String addedDate){
+        this.name = name;
+        this.id = id;
+        this.addedDate = addedDate;
+    }
 }

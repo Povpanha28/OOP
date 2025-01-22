@@ -7,5 +7,10 @@ public class Employee {
     String name;
     String role;
     double salary;
+
+    Employee(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
     
 }
