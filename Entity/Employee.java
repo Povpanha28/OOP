@@ -3,9 +3,13 @@ package Entity;
 
 public class Employee {
 
-    int id;
-    String name;
-    String role;
-    double salary;
+    int employeeID;
+    String employeeName;
+    String employeeRole;
+    double employeeSalary;
     
+    Employee(String employeeName, int employeeID){
+        this.employeeName = employeeName;
+        this.employeeID = employeeID;
+    }
 }
