@@ -6,6 +6,12 @@ public class Sale {
     int CustomerID;
     String status;
     String saleDate;
+
+    Sale(int saleID, int amount,String saleDate){
+        this.saleDate = saleDate;
+        this.saleID = saleID;
+        this.amount = amount;
+    }
 }
 
 
