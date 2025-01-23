@@ -11,9 +11,10 @@ public class Product {
     boolean status;
     String addedDate;
     
-    Product(String name, int id, String addedDate){
+    Product(String name, int id, String addedDate,int qty){
         this.name = name;
         this.id = id;
         this.addedDate = addedDate;
+        this.qty =qty;
     }
 }

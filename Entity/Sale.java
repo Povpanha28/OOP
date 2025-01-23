@@ -7,10 +7,11 @@ public class Sale {
     String status;
     String saleDate;
 
-    Sale(int saleID, int amount,String saleDate){
+    Sale(int saleID, int amount,String saleDate,int CustomerID){
         this.saleDate = saleDate;
         this.saleID = saleID;
         this.amount = amount;
+        this.CustomerID = CustomerID;
     }
 }
 
