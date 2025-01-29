@@ -7,9 +7,11 @@ public class Employee {
     String employeeName;
     String employeeRole;
     double employeeSalary;
+    contactt 
     
-    Employee(String employeeName, int employeeID){
+    Employee(String employeeName, int employeeID, String employeeRole, double employeeSalary){
         this.employeeName = employeeName;
         this.employeeID = employeeID;
+        this.employeeRole
     }
 }

@@ -10,6 +10,8 @@ public class Product {
     String description;
     boolean status;
     String addedDate;
+    // expiredDate
+    
     
     Product(String name, int id, String addedDate,int qty){
         this.name = name;

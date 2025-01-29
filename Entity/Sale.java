@@ -1,15 +1,13 @@
 package Entity;
 public class Sale {
-
+    String name;
     int saleID;
     int amount;
     int CustomerID;
     String status;
     String saleDate;
 
-    Sale(int saleID, int amount,String saleDate,int CustomerID){
-        this.saleDate = saleDate;
-        this.saleID = saleID;
+    Sale(int amount,int CustomerID){
         this.amount = amount;
         this.CustomerID = CustomerID;
     }
