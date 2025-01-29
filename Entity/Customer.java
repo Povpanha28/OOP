@@ -1,31 +1,31 @@
 package Entity;
-
-import java.util.Random;
-
 public class Customer {
     // Instance variables (Private for encapsulation)
     private String customerName;
-    private int customerID;
+    static  int customerID = 0;
     private String customerContact;
     private String customerAddress;
+    private int password;
+    private String userName;
 
     // Static variable (Shared across all instances)
     private static int totalCustomers = 0;
 
-    // Constructor (Public: Allows object creation from anywhere)
+    // Constructor for register
     public Customer(String customerName, String customerContact, String customerAddress) {
         this.customerName = customerName;
-        this.customerID = generateRandomID();
+        customerID = customerID + 1;
         this.customerContact = customerContact;
         this.customerAddress = customerAddress;
         totalCustomers++; // Increment total customer count
     }
 
-    // Method to generate a random customer ID
-    private int generateRandomID() {
-        Random rand = new Random();
-        return rand.nextInt(100000); // Generates a random ID between 0 and 99999
+    //constructor for login
+    public Customer(int password,String userName ){
+        this.password = password;
+        this.userName = userName;
     }
+
 
     // Getter methods (Public: Provides controlled access to private variables)
     public String getCustomerName() {
@@ -48,21 +48,26 @@ public class Customer {
         return totalCustomers;
     }
 
+    public int getCustomerPass(){
+        return password;
+    }
+    public String getUserName(){
+        return userName;
+    }
+
     // Setter methods (Public: Allows modifying private variables with validation)
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
+    
 
-    public void setCustomerID(int customerID) {
-        this.customerID = customerID;
-    }
-
-    public void setCustomerContact(String customerContact) {
-        if (customerContact.matches("\\d{10}")) { // Ensures it's a 10-digit number
-            this.customerContact = customerContact;
+    public void changeCustomerPass(int oldPassword, int newPassword) {
+        if (this.password == oldPassword) {
+            this.password = newPassword;
+            System.out.println("Password changed successfully.");
         } else {
-            System.out.println("Invalid contact number. It must be a 10-digit number.");
+            System.out.println("Incorrect old password. Password change failed.");
         }
+    }
+    public void changeUsername(){
+        
     }
 
     public void setCustomerAddress(String customerAddress) {
