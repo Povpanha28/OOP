@@ -2,12 +2,14 @@ package Entity;
 
 public class Customer {
 
-    String customerName;
-    int customerID;
-    String customerContact;
-    String customerAddress;
+    public String customerName;
+    public int customerID;
+    public String customerContact;
+    public String customerAddress;
     
-    Customer(String customerName, int customerID,String customerContact,String customerAddress){
+    
+    
+    public Customer(String customerName, int customerID, String customerContact, String customerAddress){
         this.customerName = customerName;
         this.customerID = customerID;
         this.customerContact = customerContact;
