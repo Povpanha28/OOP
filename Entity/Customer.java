@@ -1,5 +1,7 @@
 package Entity;
 
+import java.util.Random;
+
 public class Customer {
     // Instance variables (Private for encapsulation)
     private String customerName;
@@ -11,12 +13,18 @@ public class Customer {
     private static int totalCustomers = 0;
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Customer(String customerName, int customerID, String customerContact, String customerAddress) {
+    public Customer(String customerName, String customerContact, String customerAddress) {
         this.customerName = customerName;
-        this.customerID = customerID;
+        this.customerID = generateRandomID();
         this.customerContact = customerContact;
         this.customerAddress = customerAddress;
         totalCustomers++; // Increment total customer count
+    }
+
+    // Method to generate a random customer ID
+    private int generateRandomID() {
+        Random rand = new Random();
+        return rand.nextInt(100000); // Generates a random ID between 0 and 99999
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
