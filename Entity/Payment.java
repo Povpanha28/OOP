@@ -1,24 +1,21 @@
 package Entity;
 
 public class Payment {
-    // Instance variables (Private for encapsulation)
-    private int paymentID;
+
+    private static int paymentID = 0;
     private int saleID;
     private String paymentMethod;
     private String transactionDate;
     private double amountPaid;
 
-    // Static variable (Shared across all instances)
-    private static int totalPayments = 0;
 
     // Constructor (Public: Allows object creation from anywhere)
     public Payment(int paymentID, int saleID, String paymentMethod, String transactionDate, double amountPaid) {
-        this.paymentID = paymentID;
+        paymentID++;
         this.saleID = saleID;
         this.paymentMethod = paymentMethod;
         this.transactionDate = transactionDate;
         this.amountPaid = amountPaid;
-        totalPayments++; // Increment total payment count
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -42,14 +39,6 @@ public class Payment {
         return amountPaid;
     }
 
-    public static int getTotalPayments() {
-        return totalPayments;
-    }
-
-    // Setter methods (Public: Allows modifying private variables)
-    public void setPaymentID(int paymentID) {
-        this.paymentID = paymentID;
-    }
 
     public void setSaleID(int saleID) {
         this.saleID = saleID;
@@ -71,10 +60,5 @@ public class Payment {
         }
     }
 
-    // Method with local variable scope
-    public void displayPaymentInfo() {
-        String info = "Payment ID: " + paymentID + ", Amount: $" + amountPaid + ", Method: " + paymentMethod;
-        System.out.println(info);
-    }
 }
 

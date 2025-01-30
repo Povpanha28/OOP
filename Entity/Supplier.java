@@ -2,7 +2,7 @@ package Entity;
 
 public class Supplier {
     // Instance variables (Private for encapsulation)
-    private int supplierID;
+    private static int supplierID = 0;
     private String supplierName;
     private String contactNumber;
     private double amountPaid;
@@ -10,18 +10,15 @@ public class Supplier {
     private int transactionID;
     private String paymentMethod;
 
-    // Static variable (Shared across all instances)
-    private static int supplierCount = 0;
 
     // Constructor (Public: Allows object creation from anywhere)
     public Supplier(int transactionID, int supplierID, String supplierName, String contactNumber, double amountPaid, String paymentMethod) {
         this.transactionID = transactionID;
-        this.supplierID = supplierID;
+        supplierID++;
         this.supplierName = supplierName;
         this.contactNumber = contactNumber;
         this.amountPaid = amountPaid;
         this.paymentMethod = paymentMethod;
-        supplierCount++; // Increment supplier count
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -53,14 +50,6 @@ public class Supplier {
         return paymentMethod;
     }
 
-    public static int getSupplierCount() {
-        return supplierCount;
-    }
-
-    // Setter methods (Public: Allows modifying private variables)
-    public void setSupplierID(int supplierID) {
-        this.supplierID = supplierID;
-    }
 
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
@@ -86,10 +75,5 @@ public class Supplier {
         this.paymentMethod = paymentMethod;
     }
 
-    // Method with local variable scope
-    public void displaySupplierInfo() {
-        String info = "Supplier: " + supplierName + " (ID: " + supplierID + "), Transaction ID: " + transactionID;
-        System.out.println(info);
-    }
 }
 
