@@ -3,22 +3,35 @@ package Entity;
 // Purpose: Manages the details of items available for sale
 
 public class Product {
-
-    String name;
-    int id;
-    double price;
-    int qty;
-    String description;
-    boolean status;
+    private static int counter = 0; // Static counter for unique IDs
+    public int productId; // Instance variable for unique ID
+    String productName;
+    double productPrice;
+    int productQty;
+    String productDescription;
+    boolean productStatus;
     String addedDate;
     String expiredDate;
 
     // Constructor
-    Product(String name, int id, String addedDate, int qty, String expiredDate) {
-        this.name = name;
-        this.id = id;
+    public Product(String productName, String addedDate, int productQty, String expiredDate) {
+        this.productId = ++counter; // Assign unique ID to each instance
+        this.productName = productName;
         this.addedDate = addedDate;
-        this.qty = qty;
+        this.productQty = productQty;
         this.expiredDate = expiredDate;
     }
+
+
+    // Getters
+    public double getPrice() {
+        return productPrice;
+    }
+
+    // Setters
+    public double setPrice(double price) {
+        return this.productPrice = price;
+    }
+
+
 }
