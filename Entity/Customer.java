@@ -1,4 +1,7 @@
 package Entity;
+
+import java.util.ArrayList;
+
 public class Customer {
     // Instance variables (Private for encapsulation)
     private String customerName;
@@ -10,6 +13,19 @@ public class Customer {
 
     // Static variable (Shared across all instances)
     private static int totalCustomers = 0;
+    //define ArrayList for customer
+    ArrayList<Customer> customer = new ArrayList<Customer>();
+    //function add customer
+    public void addCustomer(Customer customer){
+        this.customer.add(customer);
+    }
+    //function remove customer
+    public void removeCustomer(Customer customer){
+        this.customer.remove(customer);
+    }
+    
+
+
 
     // Constructor for register
     public Customer(String customerName, String customerContact, String customerAddress) {
@@ -28,6 +44,9 @@ public class Customer {
 
 
     // Getter methods (Public: Provides controlled access to private variables)
+    public ArrayList<Customer> getCustomer(){
+        return customer;
+    }
     public String getCustomerName() {
         return customerName;
     }
