@@ -1,20 +1,23 @@
 package Entity;
 
+
 public class Payment {
 
     private static int paymentID = 0;
-    private int saleID;
+    private int saleID; 
     private String paymentMethod;
     private String transactionDate;
     private double amountPaid;
+
     private final String adminPassword = "SecurePass123";
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Payment(int paymentID, int saleID, String paymentMethod, double amountPaid) {
+    public Payment(int saleID,  double amountPaid, String transactionDate, String paymentMethod) {
         paymentID++;
         this.saleID = saleID;
         this.paymentMethod = paymentMethod;
         this.amountPaid = amountPaid;
+        this.transactionDate = transactionDate;
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
