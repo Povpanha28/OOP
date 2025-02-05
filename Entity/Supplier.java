@@ -2,23 +2,18 @@ package Entity;
 
 public class Supplier {
     // Instance variables (Private for encapsulation)
-    private static int supplierID = 0;
+    private int supplierID;
     private String supplierName;
     private String contactNumber;
-    private double amountPaid;
-    private String date;
-    private int transactionID;
-    private String paymentMethod;
 
+    private static int totalSuppliers = 0;
+    private static String password = "password";
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Supplier(int transactionID, int supplierID, String supplierName, String contactNumber, double amountPaid, String paymentMethod) {
-        this.transactionID = transactionID;
-        supplierID++;
+    public Supplier(String supplierName, String contactNumber) {
+        this.supplierID = ++totalSuppliers;
         this.supplierName = supplierName;
         this.contactNumber = contactNumber;
-        this.amountPaid = amountPaid;
-        this.paymentMethod = paymentMethod;
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -34,45 +29,21 @@ public class Supplier {
         return contactNumber;
     }
 
-    public double getAmountPaid() {
-        return amountPaid;
+    //Setter methods
+    public void setSupplierName(String supplierName, String password) {
+        if (password.equals(Supplier.password)) {
+            this.supplierName = supplierName;
+        } else {
+            System.out.println("Incorrect password. Supplier name cannot be changed.");
+        }
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public int getTransactionID() {
-        return transactionID;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public void setAmountPaid(double amountPaid) {
-        this.amountPaid = amountPaid;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setTransactionID(int transactionID) {
-        this.transactionID = transactionID;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setContactNumber(String contactNumber, String password) {
+        if (password.equals(Supplier.password)) {
+            this.contactNumber = contactNumber;
+        } else {
+            System.out.println("Incorrect password. Contact number cannot be changed.");
+        }
     }
 
 }
