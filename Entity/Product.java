@@ -12,6 +12,8 @@ public class Product {
     private boolean productStatus;
     private String addedDate;
     private String expiredDate;
+    
+    private static final String ADMIN_PASSWORD = "securePass123"; // Hardcoded for demo, should be stored securely.
 
     // Constructor
     public Product(String productName, String addedDate, int productQty, String expiredDate) {
@@ -22,7 +24,7 @@ public class Product {
         this.expiredDate = expiredDate;
     }
 
-    // Getters
+    // Getters (No restriction on reading data)
     public int getProductId() {
         return productId;
     }
@@ -55,34 +57,57 @@ public class Product {
         return expiredDate;
     }
 
-    // Setters (with validation where needed)
-    public void setProductName(String productName) {
-        if (!productName.isEmpty()) {
+    // Setters with Access Control
+    public void setProductName(String productName, String password) {
+        if (authenticate(password) && !productName.isEmpty()) {
             this.productName = productName;
+        } else {
+            System.out.println("Access Denied: Unauthorized or invalid input.");
         }
     }
 
-    public void setProductPrice(double productPrice) {
-        if (productPrice >= 0) {
+    public void setProductPrice(double productPrice, String password) {
+        if (authenticate(password) && productPrice >= 0) {
             this.productPrice = productPrice;
+        } else {
+            System.out.println("Access Denied: Unauthorized or invalid price.");
         }
     }
 
-    public void setProductQty(int productQty) {
-        if (productQty >= 0) {
+    public void setProductQty(int productQty, String password) {
+        if (authenticate(password) && productQty >= 0) {
             this.productQty = productQty;
+        } else {
+            System.out.println("Access Denied: Unauthorized or invalid quantity.");
         }
     }
 
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+    public void setProductDescription(String productDescription, String password) {
+        if (authenticate(password)) {
+            this.productDescription = productDescription;
+        } else {
+            System.out.println("Access Denied: Unauthorized.");
+        }
     }
 
-    public void setProductStatus(boolean productStatus) {
-        this.productStatus = productStatus;
+    public void setProductStatus(boolean productStatus, String password) {
+        if (authenticate(password)) {
+            this.productStatus = productStatus;
+        } else {
+            System.out.println("Access Denied: Unauthorized.");
+        }
     }
 
-    public void setExpiredDate(String expiredDate) {
-        this.expiredDate = expiredDate;
+    public void setExpiredDate(String expiredDate, String password) {
+        if (authenticate(password)) {
+            this.expiredDate = expiredDate;
+        } else {
+            System.out.println("Access Denied: Unauthorized.");
+        }
+    }
+
+    // Authentication Method
+    private boolean authenticate(String password) {
+        return ADMIN_PASSWORD.equals(password);
     }
 }

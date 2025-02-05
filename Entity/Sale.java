@@ -3,11 +3,14 @@ package Entity;
 public class Sale {
     private static int counter = 0; // Static counter for unique IDs
     private final int saleID;  // Unique sale ID (cannot be changed)
-    private int customerID; 
+    private int customerID;
     private int productID;
     private int amountOfProduct;
     private int totalPrice;
     private String saleDate;
+    
+    // Simulating an authority level (In real applications, use proper authentication)
+    private static final String ADMIN_PASSWORD = "admin123"; 
 
     // Constructor
     public Sale(int customerID, int productID, int amountOfProduct) {
@@ -49,23 +52,37 @@ public class Sale {
         return saleDate;
     }
 
-    // Setters with Access Control
-    public void setAmountOfProduct(int amount) {
+    // Secure Setters - Only Admins Can Modify Data
+    public void setAmountOfProduct(int amount, String password) {
+        if (!isAuthorized(password)) {
+            throw new SecurityException("Unauthorized access: Only admins can change amount of product.");
+        }
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount of product must be greater than zero.");
         }
         this.amountOfProduct = amount;
     }
 
-    public void setTotalPrice(int price) {
+    public void setTotalPrice(int price, String password) {
+        if (!isAuthorized(password)) {
+            throw new SecurityException("Unauthorized access: Only admins can change total price.");
+        }
         if (price < 0) {
             throw new IllegalArgumentException("Total price cannot be negative.");
         }
         this.totalPrice = price;
     }
 
-    public void setSaleDate(String saleDate) {
+    public void setSaleDate(String saleDate, String password) {
+        if (!isAuthorized(password)) {
+            throw new SecurityException("Unauthorized access: Only admins can change sale date.");
+        }
         this.saleDate = saleDate;
+    }
+
+    // Helper method to verify authorization
+    private boolean isAuthorized(String password) {
+        return ADMIN_PASSWORD.equals(password);
     }
 
     // Display sale details
