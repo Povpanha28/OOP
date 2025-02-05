@@ -13,7 +13,7 @@ public class Product {
     private String addedDate;
     private String expiredDate;
     
-    private static final String ADMIN_PASSWORD = "securePass123"; // Hardcoded for demo, should be stored securely.
+    private static final String ADMIN_PASSWORD = "admin123"; // Hardcoded for demo, should be stored securely.
 
     // Constructor
     public Product(String productName, String addedDate, int productQty, String expiredDate) {
