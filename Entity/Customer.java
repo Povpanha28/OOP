@@ -14,26 +14,44 @@ public class Customer {
     // Static variable (Shared across all instances)
     private static int totalCustomers = 0;
     //define ArrayList for customer
-    ArrayList<Customer> customer = new ArrayList<Customer>();
+    ArrayList<Customer> customer = new ArrayList<>();
     //function add customer
-    public void addCustomer(Customer customer){
-        this.customer.add(customer);
+    public void addCustomer(int customerID, String customerName, String customerContact, String customerAddress){
+        customer.add(new Customer(customerID ,customerName, customerContact, customerAddress));
     }
     //function remove customer
-    public void removeCustomer(Customer customer){
-        this.customer.remove(customer);
+    public void removeCustomer(int customerID){
+        for(int i = 0; i < customer.size(); i++){
+            if(customer.get(i).getCustomerID() == customerID){
+                customer.remove(i);
+            }
+        }
+    }
+    // count total customer
+    public int totalCustomer(){
+        return customer.size();
     }
     
 
 
 
     // Constructor for register
-    public Customer(String customerName, String customerContact, String customerAddress) {
+    public Customer(int customerID, String customerName, String customerContact, String customerAddress) {
+        Customer.customerID = customerID;
         this.customerName = customerName;
-        customerID = customerID + 1;
         this.customerContact = customerContact;
         this.customerAddress = customerAddress;
         totalCustomers++; // Increment total customer count
+    }
+
+    //find customer by ID
+    public Customer findCustomer(int customerID){
+        for(int i = 0; i < customer.size(); i++){
+            if(customer.get(i).getCustomerID() == customerID){
+                return customer.get(i);
+            }
+        }
+        return null;
     }
 
     //constructor for login
@@ -44,12 +62,6 @@ public class Customer {
 
 
     // Getter methods (Public: Provides controlled access to private variables)
-    public ArrayList<Customer> getCustomer(){
-        return customer;
-    }
-    public String getCustomerName() {
-        return customerName;
-    }
 
     public int getCustomerID() {
         return customerID;
