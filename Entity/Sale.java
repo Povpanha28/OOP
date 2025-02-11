@@ -1,18 +1,22 @@
 package Entity;
 
+import java.util.HashMap;
+import java.util.Collection;
+
 public class Sale {
-    private static int counter = 0; // Static counter for unique IDs
-    private final int saleID;  // Unique sale ID (cannot be changed)
+    private static int counter = 0;
+    private final int saleID;
     private int customerID;
     private int productID;
     private int amountOfProduct;
     private int totalPrice;
     private String saleDate;
-    
-    // Simulating an authority level (In real applications, use proper authentication)
-    private static final String ADMIN_PASSWORD = "admin123"; 
 
-    // Constructor
+    // HashMap to store all sales by saleID for fast lookup
+    private static HashMap<Integer, Sale> salesMap = new HashMap<>();
+
+    private static final String ADMIN_PASSWORD = "admin123";
+
     public Sale(int customerID, int productID, int amountOfProduct) {
         if (customerID <= 0 || productID <= 0) {
             throw new IllegalArgumentException("Customer ID and Product ID must be valid positive numbers.");
@@ -21,10 +25,23 @@ public class Sale {
             throw new IllegalArgumentException("Amount of product must be greater than zero.");
         }
 
-        this.saleID = ++counter; // Assign unique ID to each instance
+        this.saleID = ++counter;
         this.customerID = customerID;
         this.productID = productID;
         this.amountOfProduct = amountOfProduct;
+
+        // Add the new sale to the HashMap
+        salesMap.put(this.saleID, this);
+    }
+
+    // Static method to retrieve a sale by ID
+    public static Sale getSaleByID(int saleID) {
+        return salesMap.get(saleID);
+    }
+
+    // Static method to get all sales
+    public static Collection<Sale> getAllSales() {
+        return salesMap.values();
     }
 
     // Getters
