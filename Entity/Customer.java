@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class Customer {
     // Instance variables (Private for encapsulation)
+    private int customerID;
     private String customerName;
-    static int customerID = 0;
     private String customerContact;
     private String customerAddress;
     private int password;
@@ -16,39 +16,60 @@ public class Customer {
     // Define HashMap for customers
     private static HashMap<Integer, Customer> customers = new HashMap<>();
 
-    // Function to add customer
-    public void addCustomer(int customerID, String customerName, String customerContact, String customerAddress) {
-        customers.put(customerID, new Customer(customerID, customerName, customerContact, customerAddress));
+    // Static function to add customer
+    public static void addCustomer(int customerID, String customerName, String customerContact, String customerAddress, int password, String userName) {
+        customers.put(customerID, new Customer(customerID, customerName, customerContact, customerAddress, password, userName));
     }
 
-    // Function to remove customer
-    public void removeCustomer(int customerID) {
-        customers.remove(customerID);
+    // Static function to remove customer
+    public static void removeCustomer(int customerID) {
+        if (customers.remove(customerID) != null) {
+            totalCustomers--; // Decrement total customer count
+        }
     }
 
-    // Count total customers
-    public int totalCustomer() {
+    // Static function to count total customers
+    public static int totalCustomer() {
         return customers.size();
     }
 
     // Constructor for register
-    public Customer(int customerID, String customerName, String customerContact, String customerAddress) {
-        Customer.customerID = customerID;
+    public Customer(int customerID, String customerName, String customerContact, String customerAddress, int password, String userName) {
+        this.customerID = customerID;
         this.customerName = customerName;
         this.customerContact = customerContact;
         this.customerAddress = customerAddress;
+        this.password = password;
+        this.userName = userName;
         totalCustomers++; // Increment total customer count
     }
 
-    // Find customer by ID
-    public Customer findCustomer(int customerID) {
+    // Static function to find customer by ID
+    public static Customer findCustomer(int customerID) {
         return customers.get(customerID);
     }
 
-    // Constructor for login
-    public Customer(int password, String userName) {
-        this.password = password;
-        this.userName = userName;
+    // Static function to authenticate customer
+    public static void authenticateCustomer(String userName, int password) {
+        boolean loginSuccessful = false;
+        for (Customer customer : customers.values()) {
+            if (customer.getUserName().equals(userName) && customer.getCustomerPass() == password) {
+                System.out.println("Login successful.");
+                loginSuccessful = true;
+                break;
+            }
+        }
+        if (!loginSuccessful) {
+            System.out.println("Login failed.");
+        }
+        
+    }
+
+    // Static method to display all customers
+    public static void displayAllCustomers() {
+        for (Customer customer : customers.values()) {
+            System.out.println(customer.getCustomerDetails());
+        }
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -90,8 +111,8 @@ public class Customer {
         }
     }
 
-    public void changeUsername() {
-        // Implementation for changing username
+    public void changeUsername(String newUserName) {
+        this.userName = newUserName;
     }
 
     public void setCustomerAddress(String customerAddress) {
@@ -99,10 +120,7 @@ public class Customer {
     }
 
     // Method with local variable scope
-    public void displayCustomerInfo() {
-        String info = "Customer ID: " + customerID + ", Name: " + customerName +
-                      ", Contact: " + customerContact + ", Address: " + customerAddress;
-        System.out.println(info);
+    public String getCustomerDetails() {
+        return "Customer " + this.customerID + ": " + this.customerName + ", Contact: " + this.customerContact + ", Address: " + this.customerAddress;
     }
 }
-
