@@ -76,6 +76,10 @@ public class Customer {
         return userName;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
     // Setter methods (Public: Allows modifying private variables with validation)
     public void changeCustomerPass(int oldPassword, int newPassword) {
         if (this.password == oldPassword) {
