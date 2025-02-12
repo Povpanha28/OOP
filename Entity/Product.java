@@ -12,6 +12,7 @@ public class Product {
     private boolean productStatus;
     private String addedDate;
     private String expiredDate;
+    private String supplierID;
     
     private static final String ADMIN_PASSWORD = "admin123";
 
@@ -19,12 +20,13 @@ public class Product {
     private static HashMap<Integer, Product> productDatabase = new HashMap<>();
 
     // Constructor
-    public Product(String productName, String addedDate, int productQty, String expiredDate) {
+    public Product(String productName, String addedDate, int productQty, String expiredDate,String supplierID) {
         this.productId = ++counter;
         this.productName = productName;
         this.addedDate = addedDate;
         this.productQty = productQty;
         this.expiredDate = expiredDate;
+        this.supplierID = supplierID;
 
         // Add product to the HashMap automatically upon creation
         productDatabase.put(this.productId, this);
@@ -54,6 +56,7 @@ public class Product {
     public boolean isProductStatus() { return productStatus; }
     public String getAddedDate() { return addedDate; }
     public String getExpiredDate() { return expiredDate; }
+    public String getSupplierID() { return supplierID; }
 
     // Setters with authentication
     public void setProductName(String productName, String password) {
@@ -99,6 +102,14 @@ public class Product {
     public void setExpiredDate(String expiredDate, String password) {
         if (authenticate(password)) {
             this.expiredDate = expiredDate;
+        } else {
+            System.out.println("Access Denied: Unauthorized.");
+        }
+    }
+
+    public void setSupplierID(String supplierID, String password) {
+        if (authenticate(password)) {
+            this.supplierID = supplierID;
         } else {
             System.out.println("Access Denied: Unauthorized.");
         }
