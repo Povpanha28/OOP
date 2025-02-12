@@ -33,6 +33,9 @@ public class Payment {
     public double getAmountPaid() {return amountPaid;}
 
     public static Payment getPaymentByID(int id) {
+        if(!paymentDatabase.containsKey(id)){
+            return null;
+        }
         return paymentDatabase.get(id); // Retrieve payment by ID
     }
 
@@ -51,7 +54,7 @@ public class Payment {
     }
 
     // Password
-    private boolean isAuthorized(String password) {
+    protected boolean isAuthorized(String password) {
         return password.equals(adminPassword);
     }
 
