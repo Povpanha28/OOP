@@ -1,11 +1,11 @@
 package Entity;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Customer {
     // Instance variables (Private for encapsulation)
     private String customerName;
-    static  int customerID = 0;
+    static int customerID = 0;
     private String customerContact;
     private String customerAddress;
     private int password;
@@ -13,44 +13,45 @@ public class Customer {
 
     // Static variable (Shared across all instances)
     private static int totalCustomers = 0;
-    //define ArrayList for customer
-    ArrayList<Customer> customer = new ArrayList<Customer>();
-    //function add customer
-    public void addCustomer(Customer customer){
-        this.customer.add(customer);
-    }
-    //function remove customer
-    public void removeCustomer(Customer customer){
-        this.customer.remove(customer);
-    }
-    
+    // Define HashMap for customers
+    private static HashMap<Integer, Customer> customers = new HashMap<>();
 
+    // Function to add customer
+    public void addCustomer(int customerID, String customerName, String customerContact, String customerAddress) {
+        customers.put(customerID, new Customer(customerID, customerName, customerContact, customerAddress));
+    }
 
+    // Function to remove customer
+    public void removeCustomer(int customerID) {
+        customers.remove(customerID);
+    }
+
+    // Count total customers
+    public int totalCustomer() {
+        return customers.size();
+    }
 
     // Constructor for register
-    public Customer(String customerName, String customerContact, String customerAddress) {
+    public Customer(int customerID, String customerName, String customerContact, String customerAddress) {
+        Customer.customerID = customerID;
         this.customerName = customerName;
-        customerID = customerID + 1;
         this.customerContact = customerContact;
         this.customerAddress = customerAddress;
         totalCustomers++; // Increment total customer count
     }
 
-    //constructor for login
-    public Customer(int password,String userName ){
+    // Find customer by ID
+    public Customer findCustomer(int customerID) {
+        return customers.get(customerID);
+    }
+
+    // Constructor for login
+    public Customer(int password, String userName) {
         this.password = password;
         this.userName = userName;
     }
 
-
     // Getter methods (Public: Provides controlled access to private variables)
-    public ArrayList<Customer> getCustomer(){
-        return customer;
-    }
-    public String getCustomerName() {
-        return customerName;
-    }
-
     public int getCustomerID() {
         return customerID;
     }
@@ -67,16 +68,19 @@ public class Customer {
         return totalCustomers;
     }
 
-    public int getCustomerPass(){
+    public int getCustomerPass() {
         return password;
     }
-    public String getUserName(){
+
+    public String getUserName() {
         return userName;
     }
 
-    // Setter methods (Public: Allows modifying private variables with validation)
-    
+    public String getCustomerName() {
+        return customerName;
+    }
 
+    // Setter methods (Public: Allows modifying private variables with validation)
     public void changeCustomerPass(int oldPassword, int newPassword) {
         if (this.password == oldPassword) {
             this.password = newPassword;
@@ -85,8 +89,9 @@ public class Customer {
             System.out.println("Incorrect old password. Password change failed.");
         }
     }
-    public void changeUsername(){
-        
+
+    public void changeUsername() {
+        // Implementation for changing username
     }
 
     public void setCustomerAddress(String customerAddress) {

@@ -1,5 +1,7 @@
 package Entity;
 
+import java.util.HashMap;
+
 public class Supplier {
     // Instance variables (Private for encapsulation)
     private int supplierID;
@@ -10,14 +12,17 @@ public class Supplier {
 
     private static int totalSuppliers = 0;
     private static String password = "password";
+    private static HashMap<Integer, Supplier> supplierDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Supplier(String supplierName, String contactNumber, String address, String companyName) {    
+    public Supplier(String supplierName, String contactNumber, String address, String companyName) {
         this.supplierID = ++totalSuppliers;
         this.supplierName = supplierName;
         this.contactNumber = contactNumber;
         this.address = address;
         this.companyName = companyName;
+
+        supplierDatabase.put(this.supplierID, this);
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -41,7 +46,28 @@ public class Supplier {
         return companyName;
     }
 
-    //Setter methods
+    public static Supplier getPaymentByID(int id) {
+        if(!supplierDatabase.containsKey(id)){
+            return null;
+        }
+        return supplierDatabase.get(id); // Retrieve payment by ID
+    }
+
+    public static void removePaymentByID(int id, String password) {
+        Supplier supplier = supplierDatabase.get(id);
+        if (supplier != null && password.equals(Supplier.password)) {
+            supplierDatabase.remove(id);
+            System.out.println("Payment with ID " + id + " removed successfully.");
+        } else {
+            System.out.println("Unauthorized access or payment not found.");
+        }
+    }
+
+    public static HashMap<Integer, Supplier> getAllPayments() {
+        return supplierDatabase; // Retrieve all payments
+    }
+
+    // Setter methods
     public void setSupplierName(String supplierName, String password) {
         if (password.equals(Supplier.password)) {
             this.supplierName = supplierName;
@@ -74,5 +100,15 @@ public class Supplier {
         }
     }
 
-}
+    @Override
+    public String toString() {
+        return "Supplier{" +
+                "SupplierID=" + supplierID +
+                ", SupplierName='" + supplierName + '\'' +
+                ", ContactNumber='" + contactNumber + '\'' +
+                ", Address='" + address + '\'' +
+                ", CompanyName='" + companyName + '\'' +
+                '}';
+    }
 
+}
