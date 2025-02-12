@@ -9,7 +9,7 @@ public class CreditCardPayment extends Payment {
     public CreditCardPayment(int saleID, double amountPaid, String transactionDate, String paymentMethod, String cardNumber) {
         super(saleID, amountPaid, transactionDate, paymentMethod);
         this.cardNumber = cardNumber;
-        // Store the payment in the HashMap using paymentID as the key
+
         creditCardPaymentDatabase.put(getPaymentID(), this);
     }
 
