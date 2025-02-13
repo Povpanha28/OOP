@@ -8,8 +8,8 @@ public class Product {
     private String productName;
     private double productPrice;
     private int productQty;
+    // private boolean productStatus;
     private String productDescription;
-    private boolean productStatus;
     private String addedDate;
     private String expiredDate;
     private String supplierID;
@@ -20,7 +20,7 @@ public class Product {
     private static HashMap<Integer, Product> productDatabase = new HashMap<>();
 
     // Constructor
-    public Product(String productName, String addedDate, int productQty, String expiredDate,String supplierID) {
+    public Product(String productName, int productQty,String addedDate, String expiredDate,String supplierID) {
         this.productId = ++counter;
         this.productName = productName;
         this.addedDate = addedDate;
@@ -53,7 +53,7 @@ public class Product {
     public double getProductPrice() { return productPrice; }
     public int getProductQty() { return productQty; }
     public String getProductDescription() { return productDescription; }
-    public boolean isProductStatus() { return productStatus; }
+    // public boolean isProductStatus() { return productStatus; }
     public String getAddedDate() { return addedDate; }
     public String getExpiredDate() { return expiredDate; }
     public String getSupplierID() { return supplierID; }
@@ -91,13 +91,13 @@ public class Product {
         }
     }
 
-    public void setProductStatus(boolean productStatus, String password) {
-        if (authenticate(password)) {
-            this.productStatus = productStatus;
-        } else {
-            System.out.println("Access Denied: Unauthorized.");
-        }
-    }
+    // public void setProductStatus(boolean productStatus, String password) {
+    //     if (authenticate(password)) {
+    //         this.productStatus = productStatus;
+    //     } else {
+    //         System.out.println("Access Denied: Unauthorized.");
+    //     }
+    // }
 
     public void setExpiredDate(String expiredDate, String password) {
         if (authenticate(password)) {
@@ -119,6 +119,14 @@ public class Product {
     private static boolean authenticate(String password) {
         return ADMIN_PASSWORD.equals(password);
     }
+
+    @Override
+    public String toString() {
+        return "Product [productId=" + productId + ", productName=" + productName + ", productPrice=" + productPrice
+                + ", productQty=" + productQty + ", productDescription=" + productDescription + ", addedDate=" + addedDate + ", expiredDate=" + expiredDate + ", supplierID="
+                + supplierID + "]";
+    }
+
 }
 
 // ✅ Fast Lookup: O(1) time complexity for retrieving a product.

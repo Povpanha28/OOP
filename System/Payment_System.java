@@ -3,6 +3,7 @@ package System;
 import Entity.Payment;
 
 public class Payment_System {
+    @SuppressWarnings("unused")
     public static void main(String[] args) {
 
         Payment payment1 = new Payment(1, 100, "2021-01-01", "Cash");

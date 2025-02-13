@@ -102,13 +102,12 @@ public class Sale {
         return ADMIN_PASSWORD.equals(password);
     }
 
-    // Display sale details
-    public void displaySaleInfo() {
-        System.out.println("Sale ID: " + saleID);
-        System.out.println("Customer ID: " + customerID);
-        System.out.println("Product ID: " + productID);
-        System.out.println("Amount: " + amountOfProduct);
-        System.out.println("Total Price: " + totalPrice);
-        System.out.println("Sale Date: " + saleDate);
+
+    @Override
+    public String toString() {
+        return "Sale [saleID=" + saleID + ", customerID=" + customerID + ", productID=" + productID
+                + ", amountOfProduct=" + amountOfProduct + ", totalPrice=" + totalPrice + ", saleDate=" + saleDate
+                + "]";
     }
+    
 }
