@@ -1,7 +1,6 @@
 package Entity;
 
-public class Autentication {
-    public void login() {}
-    public void register() {}
-
+interface Autentication {
+    void login();
+    void register();
 }
