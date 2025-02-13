@@ -24,7 +24,6 @@ public class Sale {
         if (amountOfProduct <= 0) {
             throw new IllegalArgumentException("Amount of product must be greater than zero.");
         }
-
         this.saleID = ++counter;
         this.customerID = customerID;
         this.productID = productID;

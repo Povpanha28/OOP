@@ -18,7 +18,7 @@ public class Product {
 
     // A HashMap to store all products with productId as the key
     private static HashMap<Integer, Product> productDatabase = new HashMap<>();
-
+    
     // Constructor
     public Product(String productName, int productQty,String addedDate, String expiredDate,String supplierID) {
         this.productId = ++counter;
