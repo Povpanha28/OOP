@@ -1,4 +1,4 @@
-package Entity;
+package Entity.Sales;
 
 import java.util.HashMap;
 
