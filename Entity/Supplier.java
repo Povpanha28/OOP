@@ -2,112 +2,126 @@ package Entity;
 
 import java.util.HashMap;
 
-public class Supplier {
+public class Supplier extends User implements Autentication {
     // Instance variables (Private for encapsulation)
-    private int supplierID;
-    private String supplierName;
-    private String contactNumber;
-    private String address;
     private String companyName;
+    private String companyAddress;
+    private String companyContact;
 
-    private static int totalSuppliers = 0;
-    private static String password = "password";
     private static HashMap<Integer, Supplier> supplierDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Supplier(String supplierName, String contactNumber, String address, String companyName) {
-        this.supplierID = ++totalSuppliers;
-        this.supplierName = supplierName;
-        this.contactNumber = contactNumber;
-        this.address = address;
+    public Supplier(String username, String password, String email, String role, String companyName,
+            String companyAddress, String companyContact) {
+        super(username, password, email, role);
         this.companyName = companyName;
-
-        supplierDatabase.put(this.supplierID, this);
+        this.companyAddress = companyAddress;
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
-    public int getSupplierID() {
-        return supplierID;
-    }
 
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public String getAddress() {
-        return address;
+    // Static methods
+    public static Supplier getUserByID(int id) {
+        if (!supplierDatabase.containsKey(id)) {
+            return null;
+        }
+        return supplierDatabase.get(id); // Retrieve payment by ID
     }
 
     public String getCompanyName() {
         return companyName;
     }
 
-    public static Supplier getPaymentByID(int id) {
-        if(!supplierDatabase.containsKey(id)){
-            return null;
-        }
-        return supplierDatabase.get(id); // Retrieve payment by ID
+    public String getCompanyAddress() {
+        return companyAddress;
     }
 
-    public static void removePaymentByID(int id, String password) {
+    public String getCompanyContact() {
+        return companyContact;
+    }
+
+    public static HashMap<Integer, Supplier> getSupplierDatabase() {
+        return supplierDatabase;
+    }
+
+    // Remove supplier by ID
+    public static void removeSupplierByID(int id) {
         Supplier supplier = supplierDatabase.get(id);
-        if (supplier != null && password.equals(Supplier.password)) {
+        if (supplier != null) {
             supplierDatabase.remove(id);
-            System.out.println("Payment with ID " + id + " removed successfully.");
+            System.out.println("Supplier with ID " + id + " removed successfully.");
         } else {
-            System.out.println("Unauthorized access or payment not found.");
-        }
-    }
-
-    public static HashMap<Integer, Supplier> getAllPayments() {
-        return supplierDatabase; // Retrieve all payments
-    }
-
-    // Setter methods
-    public void setSupplierName(String supplierName, String password) {
-        if (password.equals(Supplier.password)) {
-            this.supplierName = supplierName;
-        } else {
-            System.out.println("Incorrect password. Supplier name cannot be changed.");
-        }
-    }
-
-    public void setContactNumber(String contactNumber, String password) {
-        if (password.equals(Supplier.password)) {
-            this.contactNumber = contactNumber;
-        } else {
-            System.out.println("Incorrect password. Contact number cannot be changed.");
-        }
-    }
-
-    public void setAddress(String address, String password) {
-        if (password.equals(Supplier.password)) {
-            this.address = address;
-        } else {
-            System.out.println("Incorrect password. Address cannot be changed.");
+            System.out.println("Unauthorized access or supplier not found.");
         }
     }
 
     public void setCompanyName(String companyName, String password) {
-        if (password.equals(Supplier.password)) {
+        if (password.equals(this.password)) {
             this.companyName = companyName;
         } else {
-            System.out.println("Incorrect password. Company name cannot be changed.");
+            System.out.println("Unauthorized access.");
         }
+    }
+
+    public void setCompanyAddress(String companyAddress) {
+        this.companyAddress = companyAddress;
+    }
+
+    public void setCompanyContact(String companyContact) {
+        this.companyContact = companyContact;
+    }
+
+    public static void setSupplierDatabase(HashMap<Integer, Supplier> supplierDatabase) {
+        Supplier.supplierDatabase = supplierDatabase;
     }
 
     @Override
     public String toString() {
-        return "Supplier{" +
-                "SupplierID=" + supplierID +
-                ", SupplierName='" + supplierName + '\'' +
-                ", ContactNumber='" + contactNumber + '\'' +
-                ", Address='" + address + '\'' +
-                ", CompanyName='" + companyName + '\'' +
-                '}';
+        return "Supplier [companyName=" + companyName + ", companyAddress=" + companyAddress + ", companyContact="
+                + companyContact + "]";
     }
+
+    @Override
+    public void login() {
+        System.out.println("Attempting to log in...");
+        String username = getUsername();
+        String password = getPassword(super.email, super.password);
+
+        for (Supplier supplier : supplierDatabase.values()) {
+            if (supplier.getUsername().equals(username)
+                    && supplier.getPassword(super.email, super.password).equals(password)) {
+                System.out.println("Login successful for Supplier: " + supplier.getCompanyName());
+                return;
+            }
+        }
+
+        System.out.println("Login failed. Invalid username or password.");
+    }
+
+    @Override
+    public void register() {
+        System.out.println("Registering a new supplier...");
+        String username = getUsername();
+        String password = getPassword(super.email, super.password);
+        String email = getEmail(super.email, super.password);
+        String role = getRole();
+        String companyName = this.companyName;
+        String companyAddress = this.companyAddress;
+        String companyContact = this.companyContact;
+
+        // Check if the username already exists
+        for (Supplier supplier : supplierDatabase.values()) {
+            if (supplier.getUsername().equals(username)) {
+                System.out.println("Registration failed. Username already exists.");
+                return;
+            }
+        }
+
+        // Add the new supplier to the database
+        Supplier newSupplier = new Supplier(username, password, email, role, companyName, companyAddress, companyContact);
+        User.getUserDatabase().put(newSupplier.getUserID(), newSupplier);
+        supplierDatabase.put(newSupplier.getUserID(), newSupplier);
+        System.out.println("Supplier registered successfully! User ID: " + newSupplier.getUserID());
+    }
+
 }
