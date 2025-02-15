@@ -1,5 +1,6 @@
 package Entity;
 
+import Entity.Product.Product;
 
 public class Test {
     @SuppressWarnings("unused")
