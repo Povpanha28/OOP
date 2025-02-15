@@ -1,4 +1,4 @@
-package Entity;
+package Entity.User;
 
 import java.util.HashMap;
 
