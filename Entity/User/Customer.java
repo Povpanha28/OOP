@@ -1,8 +1,8 @@
-package Entity;
+package Entity.User;
 
 import java.util.HashMap;
 
-public class Customer {
+public class Customer implements Autentication {
     // Instance variables (Private for encapsulation)
     private int customerID;
     private String customerName;
@@ -17,9 +17,9 @@ public class Customer {
     private static HashMap<Integer, Customer> customers = new HashMap<>();
 
     // Static function to add customer
-    public static void addCustomer(int customerID, String customerName, String customerContact, String customerAddress, int password, String userName) {
-        customers.put(customerID, new Customer(customerID, customerName, customerContact, customerAddress, password, userName));
-    }
+    // public static void addCustomer(int customerID, String customerName, String customerContact, String customerAddress, int password, String userName) {
+    //     customers.put(customerID, new Customer(customerID, customerName, customerContact, customerAddress, password, userName));
+    // }
 
     // Static function to remove customer
     public static void removeCustomer(int customerID) {
@@ -123,4 +123,18 @@ public class Customer {
     public String getCustomerDetails() {
         return "Customer " + this.customerID + ": " + this.customerName + ", Contact: " + this.customerContact + ", Address: " + this.customerAddress;
     }
+
+    @Override
+    public void login() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'login'");
+    }
+
+    @Override
+    public void register() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'register'");
+    }
+
+
 }

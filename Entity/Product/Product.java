@@ -1,4 +1,4 @@
-package Entity;
+package Entity.Product;
 
 import java.util.HashMap;
 

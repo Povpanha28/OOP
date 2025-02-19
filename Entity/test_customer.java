@@ -1,5 +1,7 @@
 package Entity;
 
+import Entity.User.Customer;
+
 public class test_customer {
     public static void main(String[] args) {
         Customer customer1 = new Customer(1, "John Doe", "1234567890", "123 Main St", 0, null);
