@@ -1,38 +1,31 @@
 package Entity.Product;
 
-import java.util.HashMap;
-
 public class Inventory {
-    // Instance variables (Private for encapsulation)
-    private int inventoryID;
-    private int productID;
+    private String itemName;
+    private double itemPrice;
     private int quantityInStock;
     private int reorderLevel;
-    private String lastRestockedDate;
+    private String supplierID;
+    private String addedDate;
 
-    // Static variables (Shared across all instances)
-    private static int totalInventoryItems = 0;
-    private static final String adminPassword = "SecurePass123";
-    private static HashMap<Integer, Inventory> inventoryDatabase = new HashMap<>();
-
-    // Constructor (Public: Allows object creation from anywhere)
-    public Inventory(int productID, int quantityInStock, int reorderLevel, String lastRestockedDate) {
-        this.inventoryID = ++totalInventoryItems; // Auto-generate unique inventoryID
-        this.productID = productID;
+    // Constructor
+    public Inventory(String itemName, double itemPrice, int quantityInStock, 
+                     int reorderLevel, String supplierID, String addedDate) {
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
         this.quantityInStock = quantityInStock;
         this.reorderLevel = reorderLevel;
-        this.lastRestockedDate = lastRestockedDate;
-
-        inventoryDatabase.put(this.inventoryID, this); // Add to database
+        this.supplierID = supplierID;
+        this.addedDate = addedDate;
     }
 
-    // Getter methods (Public: Provides controlled access to private variables)
-    public int getInventoryID() {
-        return inventoryID;
+    // Getters
+    public String getItemName() {
+        return itemName;
     }
 
-    public int getProductID() {
-        return productID;
+    public double getItemPrice() {
+        return itemPrice;
     }
 
     public int getQuantityInStock() {
@@ -43,100 +36,60 @@ public class Inventory {
         return reorderLevel;
     }
 
-    public String getLastRestockedDate() {
-        return lastRestockedDate;
+    public String getSupplierID() {
+        return supplierID;
     }
 
-    public static int getTotalInventoryItems() {
-        return totalInventoryItems;
+    public String getAddedDate() {
+        return addedDate;
     }
 
-    // Authorization method
-    private boolean isAuthorized(String password) {
-        return adminPassword.equals(password);
+    // Setters
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
-    // Setter methods with authorization
-    public void setProductID(int productID, String password) {
-        if (isAuthorized(password)) {
-            this.productID = productID;
+    public void setItemPrice(double itemPrice) {
+        if (itemPrice >= 0) {
+            this.itemPrice = itemPrice;
         } else {
-            System.out.println("Unauthorized access: Invalid password.");
+            System.out.println("Invalid price. It must be positive.");
         }
     }
 
-    public void setQuantityInStock(int quantityInStock, String password) {
-        if (isAuthorized(password)) {
-            if (quantityInStock >= 0) {
-                this.quantityInStock = quantityInStock;
-            } else {
-                System.out.println("Invalid quantity. It cannot be negative.");
-            }
+    public void setQuantityInStock(int quantityInStock) {
+        if (quantityInStock >= 0) {
+            this.quantityInStock = quantityInStock;
         } else {
-            System.out.println("Unauthorized access: Invalid password.");
+            System.out.println("Invalid quantity. It must be positive.");
         }
     }
 
-    public void setReorderLevel(int reorderLevel, String password) {
-        if (isAuthorized(password)) {
-            if (reorderLevel >= 0) {
-                this.reorderLevel = reorderLevel;
-            } else {
-                System.out.println("Invalid reorder level. It cannot be negative.");
-            }
+    public void setReorderLevel(int reorderLevel) {
+        if (reorderLevel >= 0) {
+            this.reorderLevel = reorderLevel;
         } else {
-            System.out.println("Unauthorized access: Invalid password.");
+            System.out.println("Invalid reorder level. It must be positive.");
         }
     }
 
-    public void setLastRestockedDate(String lastRestockedDate, String password) {
-        if (isAuthorized(password)) {
-            this.lastRestockedDate = lastRestockedDate;
-        } else {
-            System.out.println("Unauthorized access: Invalid password.");
-        }
+    public void setSupplierID(String supplierID) {
+        this.supplierID = supplierID;
     }
 
-    // Static methods for managing the inventory database
-    public static Inventory getByID(int inventoryID) {
-        if (inventoryDatabase.containsKey(inventoryID)) {
-            return inventoryDatabase.get(inventoryID);
-        } else {
-            System.out.println("Inventory with ID " + inventoryID + " not found.");
-            return null;
-        }
+    public void setAddedDate(String addedDate) {
+        this.addedDate = addedDate;
     }
 
-    public static void removeByID(int inventoryID, String password) {
-        if (adminPassword.equals(password)) {
-            if (inventoryDatabase.containsKey(inventoryID)) {
-                inventoryDatabase.remove(inventoryID);
-                System.out.println("Inventory with ID " + inventoryID + " removed successfully.");
-            } else {
-                System.out.println("Inventory with ID " + inventoryID + " not found.");
-            }
-        } else {
-            System.out.println("Unauthorized access: Invalid password.");
-        }
+    // Check if inventory needs restocking
+    public boolean needsRestocking() {
+        return quantityInStock <= reorderLevel;
     }
 
-    // Method with local variable scope
-    public void displayInventoryInfo() {
-        String info = "Inventory ID: " + inventoryID + ", Product ID: " + productID +
-                      ", Quantity: " + quantityInStock + ", Reorder Level: " + reorderLevel +
-                      ", Last Restocked: " + lastRestockedDate;
-        System.out.println(info);
-    }
-
-    // toString method (Provides a string representation of the object)
     @Override
     public String toString() {
-        return "Inventory{" +
-                "InventoryID=" + inventoryID +
-                ", ProductID=" + productID +
-                ", QuantityInStock=" + quantityInStock +
-                ", ReorderLevel=" + reorderLevel +
-                ", LastRestockedDate='" + lastRestockedDate + '\'' +
-                '}';
+        return "Inventory [Item Name=" + itemName + ", Price=" + itemPrice + 
+               ", Stock=" + quantityInStock + ", Reorder Level=" + reorderLevel + 
+               ", Supplier=" + supplierID + ", Added Date=" + addedDate + "]";
     }
 }
