@@ -5,10 +5,16 @@ public class DiscountProduct extends Product {
 
     // Constructor
     public DiscountProduct(String productName, double productPrice, int productQty, 
-                           String addedDate, String expiredDate, String supplierID, 
-                           double discountPercentage) {
-        super(productName, productPrice, productQty, addedDate, expiredDate, supplierID);
-        this.setDiscountPercentage(discountPercentage, "admin123"); // Ensures validation
+                           String productDescription, String addedDate, String supplierID, 
+                           double discountPercentage, String password) {
+        super(productName, productPrice, productQty, addedDate, "", supplierID);
+
+        if (isAuthenticated(password)) {
+            setProductDescription(productDescription, password);
+            setDiscountPercentage(discountPercentage, password); // Ensures validation
+        } else {
+            throw new SecurityException("Access Denied: Unauthorized to create DiscountProduct.");
+        }
     }
 
     // Implement abstract method from Product class
@@ -40,18 +46,10 @@ public class DiscountProduct extends Product {
         return getProductPrice() * (1 - discountPercentage / 100);
     }
 
-    // Override setter to ensure price updates properly
-    @Override
-    public void setProductPrice(double productPrice, String password) {
-        if (isAuthenticated(password) && productPrice >= 0) {
-            super.setProductPrice(productPrice, password);
-        } else {
-            System.out.println("Access Denied: Unauthorized or invalid price.");
-        }
-    }
-
     @Override
     public String toString() {
-        return super.toString() + ", Discount=" + discountPercentage + "%, FinalPrice=" + getFinalPrice();
+        return super.toString() + "\nDiscount Product Details:" +
+               "\n  - Discount: " + discountPercentage + "%" +
+               "\n  - Final Price: $" + getFinalPrice();
     }
 }
