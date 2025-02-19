@@ -8,7 +8,6 @@ public abstract class Product {
     private int productQty;
     private String productDescription;
     private String addedDate;
-    private String expiredDate;
     private String supplierID;
 
     // Constructor
@@ -19,7 +18,6 @@ public abstract class Product {
         this.productPrice = productPrice;
         this.productQty = productQty;
         this.addedDate = addedDate;
-        this.expiredDate = expiredDate;
         this.supplierID = supplierID;
     }
 
@@ -51,10 +49,6 @@ public abstract class Product {
 
     public String getAddedDate() {
         return addedDate;
-    }
-
-    public String getExpiredDate() {
-        return expiredDate;
     }
 
     public String getSupplierID() {
@@ -93,14 +87,6 @@ public abstract class Product {
         }
     }
 
-    public void setExpiredDate(String expiredDate, String password) {
-        if (isAuthenticated(password)) {
-            this.expiredDate = expiredDate;
-        } else {
-            System.out.println("Access Denied: Unauthorized.");
-        }
-    }
-
     public void setSupplierID(String supplierID, String password) {
         if (isAuthenticated(password)) {
             this.supplierID = supplierID;
@@ -119,6 +105,6 @@ public abstract class Product {
         return "Product [productId=" + productId + ", productName=" + productName +
                 ", productPrice=" + productPrice + ", productQty=" + productQty +
                 ", productDescription=" + productDescription + ", addedDate=" + addedDate +
-                ", expiredDate=" + expiredDate + ", supplierID=" + supplierID + "]";
+                ", supplierID=" + supplierID + "]";
     }
 }

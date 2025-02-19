@@ -8,6 +8,8 @@ public class Inventory {
     private String supplierID;
     private String addedDate;
 
+    private static final String ADMIN_PASSWORD = "admin123"; // Secure this properly in real systems
+
     // Constructor
     public Inventory(String itemName, double itemPrice, int quantityInStock, 
                      int reorderLevel, String supplierID, String addedDate) {
@@ -44,41 +46,58 @@ public class Inventory {
         return addedDate;
     }
 
-    // Setters
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    // Authentication method
+    private boolean isAuthenticated(String password) {
+        return ADMIN_PASSWORD.equals(password);
     }
 
-    public void setItemPrice(double itemPrice) {
-        if (itemPrice >= 0) {
+    // Setters with authentication
+    public void setItemName(String itemName, String password) {
+        if (isAuthenticated(password) && !itemName.isEmpty()) {
+            this.itemName = itemName;
+        } else {
+            System.out.println("Access Denied: Unauthorized or invalid input.");
+        }
+    }
+
+    public void setItemPrice(double itemPrice, String password) {
+        if (isAuthenticated(password) && itemPrice >= 0) {
             this.itemPrice = itemPrice;
         } else {
-            System.out.println("Invalid price. It must be positive.");
+            System.out.println("Access Denied: Unauthorized or invalid price.");
         }
     }
 
-    public void setQuantityInStock(int quantityInStock) {
-        if (quantityInStock >= 0) {
+    public void setQuantityInStock(int quantityInStock, String password) {
+        if (isAuthenticated(password) && quantityInStock >= 0) {
             this.quantityInStock = quantityInStock;
         } else {
-            System.out.println("Invalid quantity. It must be positive.");
+            System.out.println("Access Denied: Unauthorized or invalid quantity.");
         }
     }
 
-    public void setReorderLevel(int reorderLevel) {
-        if (reorderLevel >= 0) {
+    public void setReorderLevel(int reorderLevel, String password) {
+        if (isAuthenticated(password) && reorderLevel >= 0) {
             this.reorderLevel = reorderLevel;
         } else {
-            System.out.println("Invalid reorder level. It must be positive.");
+            System.out.println("Access Denied: Unauthorized or invalid reorder level.");
         }
     }
 
-    public void setSupplierID(String supplierID) {
-        this.supplierID = supplierID;
+    public void setSupplierID(String supplierID, String password) {
+        if (isAuthenticated(password)) {
+            this.supplierID = supplierID;
+        } else {
+            System.out.println("Access Denied: Unauthorized.");
+        }
     }
 
-    public void setAddedDate(String addedDate) {
-        this.addedDate = addedDate;
+    public void setAddedDate(String addedDate, String password) {
+        if (isAuthenticated(password)) {
+            this.addedDate = addedDate;
+        } else {
+            System.out.println("Access Denied: Unauthorized.");
+        }
     }
 
     // Check if inventory needs restocking
