@@ -1,15 +1,14 @@
 package Entity.Sales;
 
 import java.util.HashMap;
-import java.util.Collection;
 
-public class Sale {
+public abstract class Sale {
     private static int counter = 0;
     private final int saleID;
     private int customerID;
     private int productID;
     private int amountOfProduct;
-    private int totalPrice;
+    protected double totalPrice;
     private String saleDate;
 
     // HashMap to store all sales by saleID for fast lookup
@@ -17,7 +16,7 @@ public class Sale {
 
     private static final String ADMIN_PASSWORD = "admin123";
 
-    public Sale(int customerID, int productID, int amountOfProduct) {
+    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) {
         if (customerID <= 0 || productID <= 0) {
             throw new IllegalArgumentException("Customer ID and Product ID must be valid positive numbers.");
         }
@@ -28,6 +27,7 @@ public class Sale {
         this.customerID = customerID;
         this.productID = productID;
         this.amountOfProduct = amountOfProduct;
+        this.totalPrice = totalPrice;
 
         // Add the new sale to the HashMap
         salesMap.put(this.saleID, this);
@@ -39,8 +39,8 @@ public class Sale {
     }
 
     // Static method to get all sales
-    public static Collection<Sale> getAllSales() {
-        return salesMap.values();
+    public static HashMap<Integer, Sale> getAllSales() {
+        return salesMap;
     }
 
     // Getters
@@ -60,7 +60,7 @@ public class Sale {
         return amountOfProduct;
     }
 
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
@@ -102,11 +102,30 @@ public class Sale {
     }
 
 
+    public void setCustomerID(int customerID, String password) {
+        if (!isAuthorized(password)) {
+            throw new SecurityException("Unauthorized access: Only admins can change sale date.");
+        }
+        this.customerID = customerID;
+    }
+
+    public void setProductID(int productID, String password) {
+        if (!isAuthorized(password)) {
+            throw new SecurityException("Unauthorized access: Only admins can change sale date.");
+        }
+        this.productID = productID;
+    }
+
     @Override
     public String toString() {
         return "Sale [saleID=" + saleID + ", customerID=" + customerID + ", productID=" + productID
                 + ", amountOfProduct=" + amountOfProduct + ", totalPrice=" + totalPrice + ", saleDate=" + saleDate
                 + "]";
+    }
+
+    public abstract void processSale();
+    public double calculateTotalPrice() {
+        return totalPrice; // Default implementation
     }
     
 }
