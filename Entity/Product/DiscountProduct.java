@@ -7,7 +7,7 @@ public class DiscountProduct extends Product {
     public DiscountProduct(String productName, double productPrice, int productQty, 
                            String productDescription, String addedDate, String supplierID, 
                            double discountPercentage, String password) {
-        super(productName, productPrice, productQty, addedDate, "", supplierID);
+        super(productName, productPrice, productQty, addedDate,supplierID);
 
         if (isAuthenticated(password)) {
             setProductDescription(productDescription, password);
@@ -46,10 +46,14 @@ public class DiscountProduct extends Product {
         return getProductPrice() * (1 - discountPercentage / 100);
     }
 
+    public double getTotalPrice(){
+        return getFinalPrice() * getProductQty() ;
+    }
     @Override
     public String toString() {
         return super.toString() + "\nDiscount Product Details:" +
                "\n  - Discount: " + discountPercentage + "%" +
-               "\n  - Final Price: $" + getFinalPrice();
+               "\n  - Final Price: $" + getFinalPrice() + 
+               "\n  - Total Price: $" + getTotalPrice();
     }
 }

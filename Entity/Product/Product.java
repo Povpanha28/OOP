@@ -12,7 +12,7 @@ public abstract class Product {
 
     // Constructor
     public Product(String productName, double productPrice, int productQty,
-            String addedDate, String expiredDate, String supplierID) {
+            String addedDate, String supplierID) {
         this.productId = ++counter;
         this.productName = productName;
         this.productPrice = productPrice;
