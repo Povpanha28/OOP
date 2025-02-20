@@ -11,11 +11,15 @@ public class Supplier extends User implements Autentication {
     private static HashMap<Integer, Supplier> supplierDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Supplier(String username, String password, String email, String role, String companyName,
+    public Supplier(String username, String password, String email, String companyName,
             String companyAddress, String companyContact) {
-        super(username, password, email, role);
+        super(username, password, email);
         this.companyName = companyName;
         this.companyAddress = companyAddress;
+    }
+
+    public String getRole(){
+        return "Supplier";
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -112,7 +116,6 @@ public class Supplier extends User implements Autentication {
         String username = getUsername();
         String password = getPassword(super.email, super.password);
         String email = getEmail(super.email, super.password);
-        String role = getRole();
         String companyName = this.companyName;
         String companyAddress = this.companyAddress;
         String companyContact = this.companyContact;
@@ -126,7 +129,7 @@ public class Supplier extends User implements Autentication {
         }
 
         // Add the new supplier to the database
-        Supplier newSupplier = new Supplier(username, password, email, role, companyName, companyAddress, companyContact);
+        Supplier newSupplier = new Supplier(username, password, email, companyName, companyAddress, companyContact);
         User.getUserDatabase().put(newSupplier.getUserID(), newSupplier);
         supplierDatabase.put(newSupplier.getUserID(), newSupplier);
         System.out.println("Supplier registered successfully! User ID: " + newSupplier.getUserID());

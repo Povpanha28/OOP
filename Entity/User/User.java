@@ -10,20 +10,18 @@ public abstract class User {
     protected String email;
     private String phone;
     private String address;
-    private String role;
 
     private static HashMap<Integer, User> userDatabase = new HashMap<>();
 
     // Constructor
-    public User(String username, String password, String email, String role) {
+    public User(String username, String password, String email) {
         userID++;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.role = role;
-
-        userDatabase.put(userID, this);
     }
+
+    public abstract String getRole();
 
     // Getter methods
     public int getUserID() {
@@ -61,10 +59,6 @@ public abstract class User {
             return address;
         }
         return address;
-    }
-
-    public String getRole() {
-        return role;
     }
     
 
@@ -134,15 +128,6 @@ public abstract class User {
         }
     }
 
-    public void setRole(String role, String email, String password) {
-        if (email.equals(this.email) && password.equals(this.password)) {
-            this.role = role;
-        }
-        else {
-            System.out.println("Unauthorized access.");
-        }
-    }
-
 
     public static void setUserDatabase(HashMap<Integer, User> userDatabase, String email, String password) {
         if (email.equals("admin") && password.equals("admin")) {
@@ -156,7 +141,7 @@ public abstract class User {
     @Override
     public String toString() {
         return "User [username=" + username + ", password=" + password + ", email=" + email + ", phone=" + phone
-                + ", address=" + address + ", role=" + role + "]";
+                + ", address=" + address + "]";
     }
 
 
