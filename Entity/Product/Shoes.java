@@ -9,7 +9,7 @@ public class Shoes extends Product {
     public Shoes(String productName, double productPrice, int productQty, 
                  String productDescription, String addedDate, String supplierID, 
                  String size, String color, String brand) {
-        super(productName, productPrice, productQty, addedDate, "", supplierID);
+        super(productName, productPrice, productQty, addedDate,supplierID);
         setProductDescription(productDescription, "admin123"); // Ensuring proper description
         this.size = size;
         this.color = color;

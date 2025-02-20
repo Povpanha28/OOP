@@ -97,7 +97,6 @@ public abstract class Payment {
         } else {
             System.out.println("Unauthorized access: Invalid password.");
         }
-
     }
 
     public abstract boolean processPayment();

@@ -9,7 +9,7 @@ public class Shirt extends Product {
     public Shirt(String productName, double productPrice, int productQty, 
                  String productDescription, String addedDate, String supplierID, 
                  String size, String color, String material) {
-        super(productName, productPrice, productQty, addedDate, "", supplierID);
+        super(productName, productPrice, productQty, addedDate, supplierID);
 
             this.size = size;
             this.color = color;
