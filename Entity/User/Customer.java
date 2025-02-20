@@ -18,12 +18,16 @@ public class Customer extends User implements Autentication {
     
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Customer(String username, String password, String email, String role, String paymentMethod, String membershipLevel) {
-        super(username, password, email, role);
+    public Customer(String username, String password, String email, String paymentMethod, String membershipLevel) {
+        super(username, password, email);
         this.customerID = ++totalCustomers;
         this.paymentMethod = paymentMethod;
         this.membershipLevel = membershipLevel;
 
+    }
+
+    public String getRole(){
+        return "Customer";
     }
 
     // Static methods 
@@ -70,7 +74,6 @@ public class Customer extends User implements Autentication {
         String username = getUsername();
         String password = getPassword(super.email, super.password);
         String email = getEmail(super.email, super.password);
-        String role = getRole();
         String paymentMethod = this.paymentMethod;
         String membershipLevel = this.membershipLevel;
         // Check if the username already exists
@@ -82,7 +85,8 @@ public class Customer extends User implements Autentication {
         }
 
         // Add the new customer to the database
-        Customer customer = new Customer(username, password, email, role, paymentMethod, membershipLevel);
+        Customer customer = new Customer(username, password, email, paymentMethod, membershipLevel);
+        User.getUserDatabase().put(customer.getUserID(), customer);
         customerDatabase.put(customer.getCustomerID(), customer);
         System.out.println("Customer registered successfully! Customer ID: " + customer.getCustomerID());
         
