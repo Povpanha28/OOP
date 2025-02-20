@@ -12,6 +12,8 @@ public class Customer extends User implements Autentication {
     private static int totalCustomers = 0;
 
     // Create HashMap for customerdatabase
+    private static HashMap<Integer, Customer> customerDatabase = new HashMap<>();
+
     // Code ...
     
 
@@ -65,10 +67,24 @@ public class Customer extends User implements Autentication {
     public void register() {
         System.out.println("Registering a new customer...");
 
+        String username = getUsername();
+        String password = getPassword(super.email, super.password);
+        String email = getEmail(super.email, super.password);
+        String role = getRole();
+        String paymentMethod = this.paymentMethod;
+        String membershipLevel = this.membershipLevel;
         // Check if the username already exists
-        
+        for (Customer customer : customerDatabase.values()) {
+            if (customer.getUsername().equals(username)) {
+                System.out.println("Registration failed. Username already exists.");
+                return;
+            }
+        }
 
         // Add the new customer to the database
-
+        Customer customer = new Customer(username, password, email, role, paymentMethod, membershipLevel);
+        customerDatabase.put(customer.getCustomerID(), customer);
+        System.out.println("Customer registered successfully! Customer ID: " + customer.getCustomerID());
+        
     }
 }
