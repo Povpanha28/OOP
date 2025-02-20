@@ -9,7 +9,7 @@ public abstract class Payment {
     private int saleID;
     private String paymentMethod;
     private String transactionDate;
-    private double amountPaid;
+    protected double amountPaid;
 
     private final String adminPassword = "SecurePass123";
     private static HashMap<Integer, Payment> paymentDatabase = new HashMap<>();
@@ -100,7 +100,7 @@ public abstract class Payment {
 
     }
 
-    public abstract boolean processPayment(double amount);
+    public abstract boolean processPayment();
     public abstract boolean validatePayment();
 
 }
