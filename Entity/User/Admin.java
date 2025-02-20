@@ -3,14 +3,14 @@ package Entity.User;
 public class Admin extends User implements Autentication {
     private int AdminID =0;
     private int totalAdmins = 1;
-    private String password;
-    private String username;
+    
     private static  String role = "Admin";
 
 
-    public Admin(int AdminID, String username, String password, String firstName, String lastName) {
-        super(firstName, lastName, username, password);
-        this.AdminID = AdminID + totalAdmins;
+    //Constructor
+    public Admin(String username, String password) {
+        super(username, password, role);
+        this.AdminID = totalAdmins++;
     }
 
     public String getUsername() {
