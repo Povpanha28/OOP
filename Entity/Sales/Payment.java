@@ -2,7 +2,7 @@ package Entity.Sales;
 
 import java.util.HashMap;
 
-public class Payment {
+public abstract class Payment {
 
     private int paymentID;
     private static int nextPaymentID = 1;
@@ -98,5 +98,8 @@ public class Payment {
             System.out.println("Unauthorized access: Invalid password.");
         }
     }
+
+    public abstract boolean processPayment(double amount);
+    public abstract boolean validatePayment();
 
 }

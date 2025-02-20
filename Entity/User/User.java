@@ -2,7 +2,7 @@ package Entity.User;
 
 import java.util.HashMap;
 
-public class User {
+public abstract class User {
     // Instance variables (Private for encapsulation, belong to an object)
     private static int userID = 0;
     private String username;

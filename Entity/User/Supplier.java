@@ -63,12 +63,20 @@ public class Supplier extends User implements Autentication {
         }
     }
 
-    public void setCompanyAddress(String companyAddress) {
-        this.companyAddress = companyAddress;
+    public void setCompanyAddress(String companyAddress, String password) {
+        if (password.equals(this.password)) {
+            this.companyAddress = companyAddress;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
     }
 
-    public void setCompanyContact(String companyContact) {
-        this.companyContact = companyContact;
+    public void setCompanyContact(String companyContact, String password) {
+        if (password.equals(this.password)) {
+            this.companyContact = companyContact;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
     }
 
     public static void setSupplierDatabase(HashMap<Integer, Supplier> supplierDatabase) {
