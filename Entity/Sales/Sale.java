@@ -2,7 +2,7 @@ package Entity.Sales;
 
 import java.util.HashMap;
 
-public abstract class Sale {
+public class Sale {
     private static int counter = 0;
     private final int saleID;
     private int customerID;
@@ -123,7 +123,9 @@ public abstract class Sale {
                 + "]";
     }
 
-    public abstract void processSale();
+    public void processSale(){
+        System.out.println("Processing sale. Total price: " + calculateTotalPrice());
+    }
     public double calculateTotalPrice() {
         return totalPrice; // Default implementation
     }
