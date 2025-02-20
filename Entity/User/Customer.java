@@ -26,6 +26,10 @@ public class Customer extends User implements Autentication {
 
     }
 
+    public String getRole(){
+        return "Customer";
+    }
+
     // Static methods 
 
     // Get customer by ID from Database...
