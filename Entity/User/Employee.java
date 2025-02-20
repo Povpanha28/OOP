@@ -16,17 +16,19 @@ public class Employee extends User implements Autentication {
     private static HashMap<Integer, Employee> employeeDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Employee(String username, String password, String email, String role, String employeeName,
+    public Employee(String username, String password, String email, String employeeName,
             String employeeRole, double workHours, double employeeSalary, String paymentMethod) {
-        super(username, password, email, role);
+        super(username, password, email);
         this.employeeID = ++totalEmployees;
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
         this.workHours = workHours;
         this.employeeSalary = employeeSalary;
         this.paymentMethod = paymentMethod;
+    }
 
-        employeeDatabase.put(this.employeeID, this);
+    public String getRole(){
+        return "Employee";
     }
 
     // Static methods
@@ -150,7 +152,6 @@ public class Employee extends User implements Autentication {
         String username = getUsername();
         String password = getPassword(super.email, super.password);
         String email = getEmail(super.email, super.password);
-        String role = getRole();
         String employeeName = this.employeeName;
         String employeeRole = this.employeeRole;
         double workHours = this.workHours;
@@ -166,7 +167,7 @@ public class Employee extends User implements Autentication {
         }
 
         // Add the new employee to the database
-        Employee newEmployee = new Employee(username, password, email, role, employeeName, employeeRole, workHours,
+        Employee newEmployee = new Employee(username, password, email, employeeName, employeeRole, workHours,
                 employeeSalary, paymentMethod);
         User.getUserDatabase().put(newEmployee.getUserID(), newEmployee);
         employeeDatabase.put(newEmployee.getEmployeeID(), newEmployee);
