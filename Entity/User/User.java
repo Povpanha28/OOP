@@ -1,18 +1,13 @@
 package Entity.User;
 
-import java.util.HashMap;
 import Entity.Exception.UnauthorizedAccessException;
+import java.util.HashMap;
 
 public abstract class User{
     // Instance variables (Private for encapsulation, belong to an object)
-<<<<<<< Updated upstream
     private static int counter = 1;
     private int userID;
     private String username;
-=======
-    private static int userID = 0;
-    protected  String username;
->>>>>>> Stashed changes
     protected String password;
     protected String email;
     private String phone;
