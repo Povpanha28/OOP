@@ -1,8 +1,5 @@
 package Entity.User;
 
-<<<<<<< HEAD
-public class Admin {
-=======
 public class Admin extends User implements Autentication {
     private int AdminID =0;
     private int totalAdmins = 1;
@@ -31,6 +28,4 @@ public class Admin extends User implements Autentication {
     public void setPassword(String password) {
         this.password = password;
     }
->>>>>>> 5895c8945b0f6989731ae25a516b1aa013204088
-    
 }
