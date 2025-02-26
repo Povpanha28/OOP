@@ -18,8 +18,8 @@ public class Customer extends User implements Autentication {
     
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Customer(String username, String password, String email, String paymentMethod, String membershipLevel) {
-        super(username, password, email);
+    public Customer(String username, String password, String email, String role, String paymentMethod, String membershipLevel) {
+        super(username, password, email, role);
         this.customerID = ++totalCustomers;
         this.paymentMethod = paymentMethod;
         this.membershipLevel = membershipLevel;
@@ -31,12 +31,28 @@ public class Customer extends User implements Autentication {
     }
 
     // Static methods 
+  
+
 
     // Get customer by ID from Database...
+    public static Customer getCustomerByID(int id) {
+        return customerDatabase.getOrDefault(id, null);
+    }
 
     // Remove customer by ID from Database...
+    public static void removeCustomerByID(int id) {
+        if (customerDatabase.containsKey(id)) {
+            customerDatabase.remove(id);
+            System.out.println("Customer with ID " + id + " removed successfully.");
+        } else {
+            System.out.println("Customer not found.");
+        }
+    }
 
     // Show Database...
+    public static HashMap<Integer, Customer> getCustomerDatabase() {
+        return customerDatabase;
+    }
 
     // Getter methods
     public int getCustomerID() {return customerID;}
@@ -44,8 +60,15 @@ public class Customer extends User implements Autentication {
     public String getMembershipLevel() {return membershipLevel;}
 
     // Autorized with password from user input ...
+
     
     // Setter methods
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
+    }
+    
+    
+
     // Set autorized with password to setter
     public void setPaymentMethod(String paymentMethod, String Password) {
         this.paymentMethod = paymentMethod;
@@ -64,6 +87,22 @@ public class Customer extends User implements Autentication {
 
     @Override
     public void login() {
+        System.out.println("Logging in as a customer...");
+
+        String username = getUsername();
+        String password = getPassword(super.email, super.password);
+
+        // Check if the username exists
+        for (Customer customer : customerDatabase.values()) {
+            if (customer.getUsername().equals(username)) {
+                // Check if the password is correct
+                if (customer.getPassword(super.email, super.password).equals(password)) {
+                    System.out.println("Login successful! Welcome back, " + customer.getUsername() + ".");
+                    return;
+                }
+            }
+        }
+        System.out.println("Login failed. Incorrect username or password.");
         
     }
 
@@ -89,6 +128,6 @@ public class Customer extends User implements Autentication {
         User.getUserDatabase().put(customer.getUserID(), customer);
         customerDatabase.put(customer.getCustomerID(), customer);
         System.out.println("Customer registered successfully! Customer ID: " + customer.getCustomerID());
-        
+
     }
 }
