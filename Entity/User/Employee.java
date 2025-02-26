@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 public class Employee extends User implements Autentication {
     // Instance variables (Private for encapsulation)
-    private int employeeID;
     private String employeeName;
     private String employeeRole;
     private double workHours;
@@ -12,14 +11,12 @@ public class Employee extends User implements Autentication {
     private String paymentMethod;
 
     // Static variables (Shared across all instances)
-    private static int totalEmployees = 0;
     private static HashMap<Integer, Employee> employeeDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
     public Employee(String username, String password, String email, String employeeName,
             String employeeRole, double workHours, double employeeSalary, String paymentMethod) {
         super(username, password, email);
-        this.employeeID = ++totalEmployees;
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
         this.workHours = workHours;
@@ -50,9 +47,6 @@ public class Employee extends User implements Autentication {
     }
 
     // Getter methods
-    public int getEmployeeID() {
-        return employeeID;
-    }
 
     public String getEmployeeName() {
         return employeeName;
@@ -125,7 +119,7 @@ public class Employee extends User implements Autentication {
 
     @Override
     public String toString() {
-        return "Employee [ID=" + employeeID + ", Name=" + employeeName + ", Role=" + employeeRole +
+        return "Employee [Name=" + employeeName + ", Role=" + employeeRole +
                 ", Salary=$" + employeeSalary + ", Work Hours=" + workHours + ", Payment Method=" + paymentMethod + "]";
     }
 
@@ -149,28 +143,15 @@ public class Employee extends User implements Autentication {
     @Override
     public void register() {
         System.out.println("Registering a new employee...");
-        String username = getUsername();
-        String password = getPassword(super.email, super.password);
-        String email = getEmail(super.email, super.password);
-        String employeeName = this.employeeName;
-        String employeeRole = this.employeeRole;
-        double workHours = this.workHours;
-        double employeeSalary = this.employeeSalary;
-        String paymentMethod = this.paymentMethod;
-
-        // Check if the username already exists
-        for (Employee employee : employeeDatabase.values()) {
-            if (employee.getUsername().equals(username)) {
-                System.out.println("Registration failed. Username already exists.");
-                return;
-            }
+        
+        if (employeeDatabase.containsKey(this.getUserID())) {
+            System.out.println("Employee already registered.");
+            return;
         }
-
-        // Add the new employee to the database
-        Employee newEmployee = new Employee(username, password, email, employeeName, employeeRole, workHours,
-                employeeSalary, paymentMethod);
-        User.getUserDatabase().put(newEmployee.getUserID(), newEmployee);
-        employeeDatabase.put(newEmployee.getEmployeeID(), newEmployee);
-        System.out.println("Employee registered successfully! Employee ID: " + newEmployee.getEmployeeID());
+    
+        employeeDatabase.put(this.getUserID(), this);
+        User.getUserDatabase().put(this.getUserID(), this); // Now safe to add
+        System.out.println("Employee registered successfully! User ID: " + this.getUserID());
     }
+    
 }

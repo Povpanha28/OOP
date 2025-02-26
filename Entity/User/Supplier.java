@@ -16,9 +16,10 @@ public class Supplier extends User implements Autentication {
         super(username, password, email);
         this.companyName = companyName;
         this.companyAddress = companyAddress;
+        this.companyContact = companyContact;
     }
 
-    public String getRole(){
+    public String getRole() {
         return "Supplier";
     }
 
@@ -113,26 +114,16 @@ public class Supplier extends User implements Autentication {
     @Override
     public void register() {
         System.out.println("Registering a new supplier...");
-        String username = getUsername();
-        String password = getPassword(super.email, super.password);
-        String email = getEmail(super.email, super.password);
-        String companyName = this.companyName;
-        String companyAddress = this.companyAddress;
-        String companyContact = this.companyContact;
-
-        // Check if the username already exists
-        for (Supplier supplier : supplierDatabase.values()) {
-            if (supplier.getUsername().equals(username)) {
-                System.out.println("Registration failed. Username already exists.");
-                return;
-            }
+        
+        if (supplierDatabase.containsKey(this.getUserID())) {
+            System.out.println("Supplier already registered.");
+            return;
         }
-
-        // Add the new supplier to the database
-        Supplier newSupplier = new Supplier(username, password, email, companyName, companyAddress, companyContact);
-        User.getUserDatabase().put(newSupplier.getUserID(), newSupplier);
-        supplierDatabase.put(newSupplier.getUserID(), newSupplier);
-        System.out.println("Supplier registered successfully! User ID: " + newSupplier.getUserID());
+    
+        supplierDatabase.put(this.getUserID(), this);
+        User.getUserDatabase().put(this.getUserID(), this); // Now safe to add
+        System.out.println("Supplier registered successfully! User ID: " + this.getUserID());
     }
+    
 
 }

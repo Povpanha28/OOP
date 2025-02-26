@@ -2,9 +2,10 @@ package Entity.User;
 
 import java.util.HashMap;
 
-public abstract class User {
+public abstract class User{
     // Instance variables (Private for encapsulation, belong to an object)
-    private static int userID = 0;
+    private static int counter = 1;
+    private int userID;
     private String username;
     protected String password;
     protected String email;
@@ -15,10 +16,11 @@ public abstract class User {
 
     // Constructor
     public User(String username, String password, String email) {
-        userID++;
+        this.userID = counter++;
         this.username = username;
         this.password = password;
         this.email = email;
+
     }
 
     public abstract String getRole();
@@ -143,6 +145,8 @@ public abstract class User {
         return "User [username=" + username + ", password=" + password + ", email=" + email + ", phone=" + phone
                 + ", address=" + address + "]";
     }
+
+    
 
 
 }
