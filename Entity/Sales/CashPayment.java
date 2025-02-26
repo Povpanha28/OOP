@@ -1,5 +1,7 @@
 package Entity.Sales;
 
+import Entity.Exception.InsufficientAmountException;
+
 public class CashPayment extends Payment {
 
     private String cashierName;
@@ -48,17 +50,16 @@ public class CashPayment extends Payment {
     // Implement abstract methods for CashPayment
 
     @Override
-    public boolean processPayment() {
-        // Cash payment doesn't need a processing gateway, just confirm if the amount matches
-        if (moneyGiven >= amountPaid) {
-            System.out.println("Processing cash payment of amount: " + amountPaid);
-            calculateChange(); // Recalculate change after processing
-            return true;
-        } else {
-            System.out.println("Insufficient money given.");
-            return false;
+    public boolean processPayment() throws InsufficientAmountException {
+        // Cash payment doesn't require a processing gateway
+        if (moneyGiven < amountPaid) {
+            throw new InsufficientAmountException("Insufficient money given. Amount paid: " + moneyGiven + ", Required: " + amountPaid);
         }
+        System.out.println("Processing cash payment of amount: " + amountPaid);
+        calculateChange(); // Recalculate change after processing
+        return true;
     }
+    
 
     @Override
     public boolean validatePayment() {
