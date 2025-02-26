@@ -1,5 +1,6 @@
 package Entity.User;
 
+import Entity.Exception.UnauthorizedAccessException;
 import java.util.HashMap;
 
 public abstract class User{
@@ -35,12 +36,23 @@ public abstract class User{
         return username;
     }
 
-    public String getPassword(String email, String password) {
-        if (email.equals(this.email) && password.equals(this.password)) {
-            return password;
+    public String getPassword(String email, String password) throws UnauthorizedAccessException {
+            // Password must be an integer
+            try {
+                Integer.parseInt(password);
+            } catch (NumberFormatException e) {
+                throw new UnauthorizedAccessException("Password must be an integer.");
+            }
+
+            if (password == null || password.isEmpty()) {
+                throw new UnauthorizedAccessException("Password cannot be null or empty.");
+            }
+
+            if (email.equals(this.email) && password.equals(this.password)) {
+                return password;
+            }
+            throw new UnauthorizedAccessException("Unauthorized access.");
         }
-        return null;
-    }
 
     public String getEmail(String email, String password) {
         if (email.equals(this.email) && password.equals(this.password)) {
