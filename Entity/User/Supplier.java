@@ -2,6 +2,8 @@ package Entity.User;
 
 import java.util.HashMap;
 
+import Entity.Exception.UnauthorizedAccessException;
+
 public class Supplier extends User implements Autentication {
     // Instance variables (Private for encapsulation)
     private String companyName;
@@ -95,7 +97,7 @@ public class Supplier extends User implements Autentication {
     }
 
     @Override
-    public void login() {
+    public void login() throws UnauthorizedAccessException {
         System.out.println("Attempting to log in...");
         String username = getUsername();
         String password = getPassword(super.email, super.password);

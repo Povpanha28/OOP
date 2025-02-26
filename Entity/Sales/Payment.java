@@ -3,7 +3,7 @@ package Entity.Sales;
 import java.util.HashMap;
 
 import Entity.Exception.InsufficientAmountException;
-import Entity.Exception.InvalidPaymentMethodException;
+
 import Entity.Exception.PaymentNotFoundException;
 import Entity.Exception.UnauthorizedPaymentAccessException;
 
@@ -112,7 +112,7 @@ public abstract class Payment {
     }
 
     public void setAmountPaid(double amountPaid, String password)
-            throws UnauthorizedPaymentAccessException, InvalidPaymentMethodException, InsufficientAmountException {
+            throws UnauthorizedPaymentAccessException, InsufficientAmountException {
 
         if (!isAuthorized(password)) {
             throw new UnauthorizedPaymentAccessException("Unauthorized access: Invalid password.");
