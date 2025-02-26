@@ -1,0 +1,6 @@
+package Entity.Exception;
+class UnauthorizedAccessException extends Exception {
+    public UnauthorizedAccessException(String message) {
+        super(message);
+    }
+}
