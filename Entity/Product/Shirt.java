@@ -1,5 +1,7 @@
 package Entity.Product;
 
+import java.util.Objects;
+
 public class Shirt extends Product {
     private String size;
     private String color;
@@ -10,10 +12,9 @@ public class Shirt extends Product {
                  String productDescription, String addedDate, String supplierID, 
                  String size, String color, String material) {
         super(productName, productPrice, productQty, addedDate, supplierID);
-
-            this.size = size;
-            this.color = color;
-            this.material = material;
+        this.size = size;
+        this.color = color;
+        this.material = material;
     }
 
     // Implementing abstract method from Product
@@ -35,29 +36,51 @@ public class Shirt extends Product {
         return material;
     }
 
-    // Secure Setters
-    public void setSize(String size, String password) {
-        if (isAuthenticated(password) && size != null && !size.isEmpty()) {
-            this.size = size;
-        } else {
-            System.out.println("Access Denied: Unauthorized or invalid size.");
+    // Secure Setters with Exception Handling
+    public void setSize(String size, String password) throws UnauthorizedAccessException {
+        if (!isAuthenticated(password)) {
+            throw new UnauthorizedAccessException("Access Denied: Unauthorized to change size.");
         }
+        if (size == null || size.isEmpty()) {
+            throw new IllegalArgumentException("Invalid size. It cannot be empty.");
+        }
+        this.size = size;
     }
 
-    public void setColor(String color, String password) {
-        if (isAuthenticated(password) && color != null && !color.isEmpty()) {
-            this.color = color;
-        } else {
-            System.out.println("Access Denied: Unauthorized or invalid color.");
+    public void setColor(String color, String password) throws UnauthorizedAccessException {
+        if (!isAuthenticated(password)) {
+            throw new UnauthorizedAccessException("Access Denied: Unauthorized to change color.");
         }
+        if (color == null || color.isEmpty()) {
+            throw new IllegalArgumentException("Invalid color. It cannot be empty.");
+        }
+        this.color = color;
     }
 
-    public void setMaterial(String material, String password) {
-        if (isAuthenticated(password) && material != null && !material.isEmpty()) {
-            this.material = material;
-        } else {
-            System.out.println("Access Denied: Unauthorized or invalid material.");
+    public void setMaterial(String material, String password) throws UnauthorizedAccessException {
+        if (!isAuthenticated(password)) {
+            throw new UnauthorizedAccessException("Access Denied: Unauthorized to change material.");
         }
+        if (material == null || material.isEmpty()) {
+            throw new IllegalArgumentException("Invalid material. It cannot be empty.");
+        }
+        this.material = material;
+    }
+
+    // Overriding equals() to compare objects based on field values
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Shirt shirt = (Shirt) obj;
+        return Double.compare(shirt.getProductPrice(), getProductPrice()) == 0 &&
+               getProductQty() == shirt.getProductQty() &&
+               Objects.equals(getProductName(), shirt.getProductName()) &&
+               Objects.equals(getAddedDate(), shirt.getAddedDate()) &&
+               Objects.equals(getSupplierID(), shirt.getSupplierID()) &&
+               Objects.equals(size, shirt.size) &&
+               Objects.equals(color, shirt.color) &&
+               Objects.equals(material, shirt.material);
     }
 
     @Override
@@ -68,3 +91,4 @@ public class Shirt extends Product {
                "\n  - Material: " + material;
     }
 }
+

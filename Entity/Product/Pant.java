@@ -6,20 +6,13 @@ public class Pant extends Product {
     private String material;
 
     // Constructor
-    public Pant(String productName, double productPrice, int productQty, 
-                String productDescription, String addedDate, String supplierID, 
+    public Pant(String productName, double productPrice, int productQty,
+                String productDescription, String addedDate, String supplierID,
                 String size, String color, String material) {
         super(productName, productPrice, productQty, addedDate, supplierID);
-        setProductDescription(productDescription, "admin123"); // Ensuring proper description
         this.size = size;
         this.color = color;
         this.material = material;
-    }
-
-    // Implementing abstract method from Product
-    @Override
-    public String getProductType() {
-        return "Pant";
     }
 
     // Getters
@@ -35,36 +28,60 @@ public class Pant extends Product {
         return material;
     }
 
-    // Setters with authentication
-    public void setSize(String size, String password) {
+    // Setters with authentication and exception handling
+    public void setSize(String size, String password) throws UnauthorizedAccessException {
         if (isAuthenticated(password)) {
             this.size = size;
         } else {
-            System.out.println("Access Denied: Unauthorized.");
+            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of size.");
         }
     }
 
-    public void setColor(String color, String password) {
+    public void setColor(String color, String password) throws UnauthorizedAccessException {
         if (isAuthenticated(password)) {
             this.color = color;
         } else {
-            System.out.println("Access Denied: Unauthorized.");
+            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of color.");
         }
     }
 
-    public void setMaterial(String material, String password) {
+    public void setMaterial(String material, String password) throws UnauthorizedAccessException {
         if (isAuthenticated(password)) {
             this.material = material;
         } else {
-            System.out.println("Access Denied: Unauthorized.");
+            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of material.");
         }
+    }
+
+    // Implementing abstract method from Product
+    @Override
+    public String getProductType() {
+        return "Pant";
+    }
+
+    // Override equals method
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true; // Same reference
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false; // Null or different class
+        }
+        Pant pant = (Pant) obj;
+
+        // Check superclass fields (use super.equals to compare parent class attributes)
+        return super.equals(obj) &&
+               size.equals(pant.size) &&
+               color.equals(pant.color) &&
+               material.equals(pant.material);
     }
 
     @Override
     public String toString() {
         return super.toString() + "\nPant Details: " +
-               "\n  - Size: " + size + 
-               "\n  - Color: " + color + 
-               "\n  - Material: " + material;
+                "\n  - Size: " + size +
+                "\n  - Color: " + color +
+                "\n  - Material: " + material;
     }
 }
