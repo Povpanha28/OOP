@@ -1,29 +1,30 @@
 package Entity.User;
 
+import Entity.Exception.UnauthorizedAccessException;
 import java.util.HashMap;
 
-public class User {
+public abstract class User{
     // Instance variables (Private for encapsulation, belong to an object)
-    private static int userID = 0;
+    private static int counter = 1;
+    private int userID;
     private String username;
     protected String password;
     protected String email;
     private String phone;
     private String address;
-    private String role;
 
     private static HashMap<Integer, User> userDatabase = new HashMap<>();
 
     // Constructor
-    public User(String username, String password, String email, String role) {
-        userID++;
+    public User(String username, String password, String email) {
+        this.userID = counter++;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.role = role;
 
-        userDatabase.put(userID, this);
     }
+
+    public abstract String getRole();
 
     // Getter methods
     public int getUserID() {
@@ -35,12 +36,23 @@ public class User {
         return username;
     }
 
-    public String getPassword(String email, String password) {
-        if (email.equals(this.email) && password.equals(this.password)) {
-            return password;
+    public String getPassword(String email, String password) throws UnauthorizedAccessException {
+            // Password must be an integer
+            try {
+                Integer.parseInt(password);
+            } catch (NumberFormatException e) {
+                throw new UnauthorizedAccessException("Password must be an integer.");
+            }
+
+            if (password == null || password.isEmpty()) {
+                throw new UnauthorizedAccessException("Password cannot be null or empty.");
+            }
+
+            if (email.equals(this.email) && password.equals(this.password)) {
+                return password;
+            }
+            throw new UnauthorizedAccessException("Unauthorized access.");
         }
-        return null;
-    }
 
     public String getEmail(String email, String password) {
         if (email.equals(this.email) && password.equals(this.password)) {
@@ -61,10 +73,6 @@ public class User {
             return address;
         }
         return address;
-    }
-
-    public String getRole() {
-        return role;
     }
     
 
@@ -134,15 +142,6 @@ public class User {
         }
     }
 
-    public void setRole(String role, String email, String password) {
-        if (email.equals(this.email) && password.equals(this.password)) {
-            this.role = role;
-        }
-        else {
-            System.out.println("Unauthorized access.");
-        }
-    }
-
 
     public static void setUserDatabase(HashMap<Integer, User> userDatabase, String email, String password) {
         if (email.equals("admin") && password.equals("admin")) {
@@ -156,8 +155,10 @@ public class User {
     @Override
     public String toString() {
         return "User [username=" + username + ", password=" + password + ", email=" + email + ", phone=" + phone
-                + ", address=" + address + ", role=" + role + "]";
+                + ", address=" + address + "]";
     }
+
+    
 
 
 }

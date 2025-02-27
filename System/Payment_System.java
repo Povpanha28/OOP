@@ -1,6 +1,6 @@
 package System;
 
-import Entity.Payment;
+import Entity.Sales.Payment;
 
 public class Payment_System {
     @SuppressWarnings("unused")

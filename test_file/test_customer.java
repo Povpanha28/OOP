@@ -1,6 +1,6 @@
 package test_file;
 
-import Entity.Customer;
+import Entity.User.Customer;
 
 public class test_customer {
     public static void main(String[] args) {
