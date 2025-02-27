@@ -1,5 +1,7 @@
 package Entity.Product;
 
+import java.util.Objects;
+
 public class Inventory {
     private String itemName;
     private double itemPrice;
@@ -105,6 +107,26 @@ public class Inventory {
         return quantityInStock <= reorderLevel;
     }
 
+    // Override equals method
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true; // Same reference
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false; // Null or different class
+        }
+        Inventory inventory = (Inventory) obj;
+
+        // Compare all fields of Inventory class
+        return Double.compare(inventory.itemPrice, itemPrice) == 0 &&
+               quantityInStock == inventory.quantityInStock &&
+               reorderLevel == inventory.reorderLevel &&
+               Objects.equals(itemName, inventory.itemName) &&
+               Objects.equals(supplierID, inventory.supplierID) &&
+               Objects.equals(addedDate, inventory.addedDate);
+    }
+    
     @Override
     public String toString() {
         return "Inventory [Item Name=" + itemName + ", Price=" + itemPrice + 
