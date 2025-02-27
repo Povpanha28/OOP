@@ -22,7 +22,7 @@ public class Sale {
 
     private static final String ADMIN_PASSWORD = "admin123";
 
-    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) throws OutOfStockException, InsufficientAmountException, NegativeArraySizeException {
+    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) throws OutOfStockException, InsufficientAmountException, NegativeNumberException {
         if (customerID <= 0 || productID <= 0) {
             throw new NegativeNumberException("Customer ID and Product ID must be valid positive numbers.");
         }

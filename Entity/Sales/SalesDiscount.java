@@ -2,13 +2,13 @@ package Entity.Sales;
 
 import Entity.Exception.DiscountRateException;
 import Entity.Exception.InsufficientAmountException;
+import Entity.Exception.NegativeNumberException;
 import Entity.Exception.OutOfStockException;
-import Entity.Exception.UnauthorizedAccessException;
 
 public class SalesDiscount extends Sale {
     private double discountRate;
 
-    public SalesDiscount(int customerID, int productID, int amountOfProduct,double totalPrice, double discountRate) throws InsufficientAmountException, NegativeArraySizeException, OutOfStockException, DiscountRateException {
+    public SalesDiscount(int customerID, int productID, int amountOfProduct,double totalPrice, double discountRate) throws InsufficientAmountException, NegativeNumberException, OutOfStockException, DiscountRateException {
         super(customerID, productID, amountOfProduct, totalPrice);
         if(discountRate < 0 || discountRate > 1){
             throw new DiscountRateException("Discount cannot be under 0 or over 100%");
