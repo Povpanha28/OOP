@@ -9,9 +9,6 @@ public class NumberOnlyException extends IllegalArgumentException{
         if (!input.matches(format)){
             throw new NumberOnlyException("Only numbers are allowed.");
         }
-        else {
-            System.out.println("Number is valid.");
-        }
     }
 
 }

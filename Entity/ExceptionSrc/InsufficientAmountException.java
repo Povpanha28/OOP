@@ -7,8 +7,5 @@ public class InsufficientAmountException extends IllegalArgumentException {
         if (amountGiven < amountPaid){
             throw new InsufficientAmountException("Insufficient amount.");
         }
-        else {
-            System.out.println("Payment processed successfully.");
-        }
     }
 }

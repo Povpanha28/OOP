@@ -7,8 +7,5 @@ public class NegativeNumberException extends IllegalArgumentException {
         if (input < 0){
             throw new NegativeNumberException("Negative number is not allowed.");
         }
-        else {
-            System.out.println("Number is valid.");
-        }
     }
 }
