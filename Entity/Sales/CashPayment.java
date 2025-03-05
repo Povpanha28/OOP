@@ -37,8 +37,8 @@ public class CashPayment extends Payment {
     // Method to calculate change
     private void calculateChange() {
         if (moneyGiven >= getAmountPaid()) {
-            this.change = moneyGiven - getAmountPaid();
-            System.out.println("Change is: "+change);
+            this.change = Math.round((moneyGiven - getAmountPaid()) * 100.0) / 100.0; // Round to 2 decimal places
+            System.out.println("Change is: " + change);
         } else {
             this.change = 0.0;  // If the money given is less than amount paid, no change
             System.out.println("Error: Insufficient money given for the payment.");
@@ -46,15 +46,17 @@ public class CashPayment extends Payment {
     }
 
     // Implement abstract methods for CashPayment
-
     @Override
     public boolean processPayment(){
         // Cash payment doesn't require a processing gateway
-        System.out.println("Processing cash payment of amount: " + amountPaid);
+        if (getAmountPaid() <= 0) {
+            System.out.println("Error: Amount paid must be greater than zero.");
+            return false;
+        }
+        System.out.println("Processing cash payment of amount: " + getAmountPaid());
         calculateChange(); // Recalculate change after processing
         return true;
     }
-    
 
     @Override
     public boolean validatePayment() {
