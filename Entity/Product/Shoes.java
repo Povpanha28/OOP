@@ -83,6 +83,7 @@ public class Shoes extends Product {
                Objects.equals(brand, shoes.brand);
     }
 
+
     @Override
     public String toString() {
         return super.toString() + "\nShoes Details: " +

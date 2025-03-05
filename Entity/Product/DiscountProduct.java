@@ -1,7 +1,5 @@
 package Entity.Product;
 
-import java.util.Objects;
-
 public class DiscountProduct extends Product {
     private double discountPercentage; // Discount percentage (0-100)
 
@@ -63,12 +61,6 @@ public class DiscountProduct extends Product {
         DiscountProduct that = (DiscountProduct) obj;
         return Double.compare(that.discountPercentage, discountPercentage) == 0 &&
                super.equals(obj); // Ensure that superclass attributes are also compared
-    }
-
-    // Override hashCode method
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), discountPercentage);
     }
 
     @Override
