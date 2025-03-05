@@ -1,105 +1,64 @@
 package Entity.Sales;
 
-import java.util.Scanner;
-import Entity.ExceptionSrc.NumberOnlyException;
-import Entity.ExceptionSrc.InsufficientAmountException;
+import Database.MySQLConnection;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SalesMain {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
+        // Create an ArrayList to store Sale objects
+        List<Sale> saleList = new ArrayList<>();
+        
+        // Create Sale objects (including SalesDiscount)
+        Sale sale1 = new Sale(1, 1, 5, 99.95);
+        Sale sale2 = new SalesDiscount(2, 2, 10, 199.95, 0.1);
+        Sale sale3 = new SalesDiscount(3, 3, 2, 49.95, 0.2);
 
-        while (true) {
-            System.out.println("\n===== Cloth Shop Management System =====");
-            System.out.println("1. Add Sale");
-            System.out.println("2. View Sale by ID");
-            System.out.println("3. Update Sale Amount (Admin Only)");
-            System.out.println("4. Show All Sales");
-            System.out.println("5. Exit");
-            System.out.print("Enter your choice: ");
-            try {
-                String choiceInput = scanner.nextLine();
-                new NumberOnlyException(choiceInput, "\\d+");
-                choice = Integer.parseInt(choiceInput);
+        // Add the sales to the ArrayList
+        saleList.add(sale1);
+        saleList.add(sale2);
+        saleList.add(sale3);
 
-                switch (choice) {
-                    case 1:
-                        try {
-                            System.out.print("Enter Customer ID: ");
-                            String customerIDInput = scanner.nextLine();
-                            new NumberOnlyException(customerIDInput, "\\d+");
-                            int customerID = Integer.parseInt(customerIDInput);
+        // Add sales to the database
+        addSalesToDatabase(saleList);
+    }
 
-                            System.out.print("Enter Product ID: ");
-                            String productIDInput = scanner.nextLine();
-                            new NumberOnlyException(productIDInput, "\\d+");
-                            int productID = Integer.parseInt(productIDInput);
+    // Method to add sales to the database
+    public static void addSalesToDatabase(List<Sale> sales) {
+        String query = "INSERT INTO sales (sale_id, customer_id, product_id, amount_of_product, total_price, sale_date, discount_rate) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+    
+            // Loop through each sale and insert it into the database
+            for (Sale sale : sales) {
+                pstmt.setInt(1, sale.getSaleID());
+                pstmt.setInt(2, sale.getCustomerID());
+                pstmt.setInt(3, sale.getProductID());
+                pstmt.setInt(4, sale.getAmountOfProduct());
+                pstmt.setDouble(5, sale.getTotalPrice());
 
-                            System.out.print("Enter Amount of Product: ");
-                            String amountInput = scanner.nextLine();
-                            new NumberOnlyException(amountInput, "\\d+");
-                            int amount = Integer.parseInt(amountInput);
+                // Set sale date (you can customize this based on the sale's creation time)
+                pstmt.setString(6, sale.getSaleDate() != null ? sale.getSaleDate() : "2025-03-05");
 
-                            System.out.print("Enter Total Price: ");
-                            double price = scanner.nextDouble();
-                            scanner.nextLine();
-
-                            new InsufficientAmountException(price, price);
-
-                            Sale newSale = new Sale(customerID, productID, amount, price);
-                            System.out.println("Sale Added Successfully: " + newSale);
-                        } catch (NumberOnlyException | InsufficientAmountException e) {
-                            System.out.println(e.getMessage());
-                        }
-                        break;
-
-                    case 2:
-                        System.out.print("Enter Sale ID to View: ");
-                        int saleID = scanner.nextInt();
-                        Sale sale = Sale.getSaleByID(saleID);
-                        if (sale != null) {
-                            System.out.println(sale);
-                        }
-                        scanner.nextLine();
-                        break;
-
-                    case 3:
-                        System.out.print("Enter Sale ID to Update: ");
-                        int updateID = scanner.nextInt();
-                        scanner.nextLine();
-                        Sale updateSale = Sale.getSaleByID(updateID);
-                        if (updateSale != null) {
-                            System.out.print("Enter Admin Password: ");
-                            String password = scanner.nextLine();
-                            try {
-                                System.out.print("Enter New Amount of Product: ");
-                                String newAmountInput = scanner.nextLine();
-                                new NumberOnlyException(newAmountInput, "\\d+");
-                                int newAmount = Integer.parseInt(newAmountInput);
-                                updateSale.setAmountOfProduct(newAmount, password);
-                                System.out.println("Updated Sale: " + updateSale);
-                            } catch (NumberOnlyException e) {
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                        break;
-
-                    case 4:
-                        System.out.println("All Sales: " + Sale.getAllSales());
-                        break;
-
-                    case 5:
-                        System.out.println("Exiting... Thank you!");
-                        scanner.close();
-                        System.exit(0);
-                        break;
-
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
+                // Handle discount for SalesDiscount objects
+                if (sale instanceof SalesDiscount) {
+                    pstmt.setDouble(7, ((SalesDiscount) sale).getDiscountRate());
+                } else {
+                    pstmt.setDouble(7, 0.0); // No discount for regular Sale
                 }
-            } catch (NumberOnlyException e) {
-                System.out.println(e.getMessage());
+    
+                pstmt.addBatch(); // Add to batch for batch execution
             }
+    
+            // Execute the batch of insert statements
+            pstmt.executeBatch();
+            System.out.println("Sales added to the database successfully!");
+    
+        } catch (SQLException e) {
+            System.out.println("Error adding sales to the database!");
+            e.printStackTrace();
         }
     }
 }

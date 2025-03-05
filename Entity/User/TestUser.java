@@ -1,112 +1,102 @@
 package Entity.User;
 
-import java.util.Scanner;
+import Database.MySQLConnection;
+import java.sql.*;
+import java.util.List;
 
 public class TestUser {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        User admin1 = new Admin("admin1", "admin123", "thyrak123@gmail.com");
+        admin1.register();
 
-        while (true) {
-            // Display the main menu
-            System.out.println("Choose an option to register a user:");
-            System.out.println("1. Admin");
-            System.out.println("2. Employee");
-            System.out.println("3. Customer");
-            System.out.println("4. Supplier");
-            System.out.println("5. Exit");
-            System.out.print("Enter your choice: ");
-            
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline after number input
+        User supplier1 = new Supplier("Ali", "1234", "Ali123@gmail.com", "Alibaba", "123 St Sam", "017234234");
+        supplier1.register();
 
-            switch (choice) {
-                case 1:
-                    // Admin registration
-                    System.out.println("Enter details for Admin:");
-                    System.out.print("Enter username: ");
-                    String adminUsername = scanner.nextLine();
-                    System.out.print("Enter password: ");
-                    String adminPassword = scanner.nextLine();
-                    System.out.print("Enter email: ");
-                    String adminEmail = scanner.nextLine();
-                    User admin = new Admin(adminUsername, adminPassword, adminEmail);
-                    admin.register();
-                    break;
+        User customer1 = new Customer("John", "1234", "John@gmail.com", "Cash", 1);
+        customer1.register();
 
-                case 2:
-                    // Employee registration
-                    System.out.println("Enter details for Employee:");
-                    System.out.print("Enter username: ");
-                    String employeeUsername = scanner.nextLine();
-                    System.out.print("Enter password: ");
-                    String employeePassword = scanner.nextLine();
-                    System.out.print("Enter email: ");
-                    String employeeEmail = scanner.nextLine();
-                    System.out.print("Enter employee name: ");
-                    String employeeName = scanner.nextLine();
-                    System.out.print("Enter employee role: ");
-                    String employeeRole = scanner.nextLine();
-                    System.out.print("Enter work hours: ");
-                    double workHours = scanner.nextDouble();
-                    System.out.print("Enter salary: ");
-                    double employeeSalary = scanner.nextDouble();
-                    scanner.nextLine();  // Consume newline
-                    System.out.print("Enter payment method: ");
-                    String paymentMethod = scanner.nextLine();
-                    System.out.print("Enter contact: ");
-                    String contact = scanner.nextLine();
-                    User employee = new Employee(employeeUsername, employeePassword, employeeEmail, employeeName, employeeRole,
-                            workHours, employeeSalary, paymentMethod, contact);
-                    employee.register();
-                    break;
+        User employee = new Employee("John", "1243", "John@gmail.com", "John", "Cashier", 30, 250, "Cash", "012345345");
+        employee.register();
 
-                case 3:
-                    // Customer registration
-                    System.out.println("Enter details for Customer:");
-                    System.out.print("Enter username: ");
-                    String customerUsername = scanner.nextLine();
-                    System.out.print("Enter password: ");
-                    String customerPassword = scanner.nextLine();
-                    System.out.print("Enter email: ");
-                    String customerEmail = scanner.nextLine();
-                    System.out.print("Enter payment method: ");
-                    String customerPaymentMethod = scanner.nextLine();
-                    System.out.print("Enter number of orders: ");
-                    int customerOrders = scanner.nextInt();
-                    scanner.nextLine();  // Consume newline
-                    User customer = new Customer(customerUsername, customerPassword, customerEmail, customerPaymentMethod, customerOrders);
-                    customer.register();
-                    break;
+        // Add all users to the database
+        addUsersToDatabase(List.of(admin1, supplier1, customer1, employee));
+    }
 
-                case 4:
-                    // Supplier registration
-                    System.out.println("Enter details for Supplier:");
-                    System.out.print("Enter username: ");
-                    String supplierUsername = scanner.nextLine();
-                    System.out.print("Enter password: ");
-                    String supplierPassword = scanner.nextLine();
-                    System.out.print("Enter email: ");
-                    String supplierEmail = scanner.nextLine();
-                    System.out.print("Enter supplier company name: ");
-                    String companyName = scanner.nextLine();
-                    System.out.print("Enter supplier address: ");
-                    String supplierAddress = scanner.nextLine();
-                    System.out.print("Enter contact: ");
-                    String supplierContact = scanner.nextLine();
-                    User supplier = new Supplier(supplierUsername, supplierPassword, supplierEmail, companyName, supplierAddress, supplierContact);
-                    supplier.register();
-                    break;
+    public static void addUsersToDatabase(List<User> users) {
+        String queryUser = "INSERT INTO User (username, password, email, role) VALUES (?, ?, ?, ?)";
+        String querySupplier = "INSERT INTO Supplier (user_id, company_name, company_address, company_contact) VALUES (?, ?, ?, ?)";
+        String queryEmployee = "INSERT INTO Employee (user_id, employee_name, employee_role, work_hours, employee_salary, payment_method, contact) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String queryCustomer = "INSERT INTO Customer (user_id, payment_method, membership_level) VALUES (?, ?, ?)";
 
-                case 5:
-                    // Exit
-                    System.out.println("Exiting...");
-                    scanner.close();
-                    return;
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement pstmtUser = connection.prepareStatement(queryUser, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement pstmtSupplier = connection.prepareStatement(querySupplier);
+             PreparedStatement pstmtEmployee = connection.prepareStatement(queryEmployee);
+             PreparedStatement pstmtCustomer = connection.prepareStatement(queryCustomer)) {
 
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
+            for (User user : users) {
+                // Insert user into User table
+                pstmtUser.setString(1, user.getUsername());
+                pstmtUser.setString(2, user.getPassword());
+                pstmtUser.setString(3, user.getEmail());
+
+                // Determine the role and set it
+                String role = "Unknown"; // Default value
+                if (user instanceof Admin) {
+                    role = "Admin";
+                } else if (user instanceof Supplier) {
+                    role = "Supplier";
+                } else if (user instanceof Customer) {
+                    role = "Customer";
+                } else if (user instanceof Employee) {
+                    role = "Employee";
+                }
+                pstmtUser.setString(4, role);
+                
+                pstmtUser.executeUpdate();
+                
+                // Get generated user_id
+                ResultSet generatedKeys = pstmtUser.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int userId = generatedKeys.getInt(1);
+
+                    // Insert into specific tables
+                    if (user instanceof Supplier) {
+                        Supplier supplier = (Supplier) user;
+                        pstmtSupplier.setInt(1, userId);
+                        pstmtSupplier.setString(2, supplier.getCompanyName());
+                        pstmtSupplier.setString(3, supplier.getCompanyAddress());
+                        pstmtSupplier.setString(4, supplier.getCompanyContact());
+                        pstmtSupplier.executeUpdate();
+                    }
+
+                    if (user instanceof Employee) {
+                        Employee employee = (Employee) user;
+                        pstmtEmployee.setInt(1, userId);
+                        pstmtEmployee.setString(2, employee.getEmployeeName());
+                        pstmtEmployee.setString(3, employee.getEmployeeRole());
+                        pstmtEmployee.setDouble(4, employee.getWorkHours());
+                        pstmtEmployee.setDouble(5, employee.getEmployeeSalary());
+                        pstmtEmployee.setString(6, employee.getPaymentMethod());
+                        pstmtEmployee.setString(7, employee.getContact());
+                        pstmtEmployee.executeUpdate();
+                    }
+
+                    if (user instanceof Customer) {
+                        Customer customer = (Customer) user;
+                        pstmtCustomer.setInt(1, userId);
+                        pstmtCustomer.setString(2, customer.getPaymentMethod());
+                        pstmtCustomer.setInt(3, customer.getMembershipLevel());
+                        pstmtCustomer.executeUpdate();
+                    }
+                }
             }
+
+            System.out.println("Users added to the database successfully!");
+
+        } catch (SQLException e) {
+            System.out.println("Error adding users to the database!");
+            e.printStackTrace();
         }
     }
 }

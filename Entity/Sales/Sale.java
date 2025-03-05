@@ -1,7 +1,5 @@
 package Entity.Sales;
 
-import java.util.HashMap;
-
 public class Sale {
     private static int counter = 0;
     private int saleID;
@@ -10,8 +8,6 @@ public class Sale {
     private int amountOfProduct;
     protected double totalPrice;
     private String saleDate;
-
-    private static HashMap<Integer, Sale> salesMap = new HashMap<>();
 
     private static final String ADMIN_PASSWORD = "admin123";
 
@@ -34,21 +30,6 @@ public class Sale {
         this.productID = productID;
         this.amountOfProduct = amountOfProduct;
         this.totalPrice = totalPrice;
-
-        salesMap.put(this.saleID, this);
-    }
-
-    // Static method to retrieve a sale by ID
-    public static Sale getSaleByID(int saleID) {
-        if (!salesMap.containsKey(saleID)) {
-            System.out.println("Sale with ID " + saleID + " not found.");
-            return null;
-        }
-        return salesMap.get(saleID);
-    }
-
-    public static HashMap<Integer, Sale> getAllSales() {
-        return salesMap;
     }
 
     // Getters
