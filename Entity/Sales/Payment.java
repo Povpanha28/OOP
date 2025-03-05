@@ -2,10 +2,6 @@ package Entity.Sales;
 
 import java.util.HashMap;
 
-import Entity.Exception.InsufficientAmountException;
-
-import Entity.Exception.PaymentNotFoundException;
-import Entity.Exception.UnauthorizedPaymentAccessException;
 
 public abstract class Payment {
 
@@ -16,7 +12,7 @@ public abstract class Payment {
     private String transactionDate;
     protected double amountPaid;
 
-    private final String adminPassword = "SecurePass123";
+    private final static String adminPassword = "SecurePass123";
     private static HashMap<Integer, Payment> paymentDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
@@ -51,24 +47,21 @@ public abstract class Payment {
         return amountPaid;
     }
 
-    public static Payment getPaymentByID(int id) throws PaymentNotFoundException {
+    public static Payment getPaymentByID(int id) {
         if (!paymentDatabase.containsKey(id)) {
-            throw new PaymentNotFoundException("Payment with ID " + id + " not found.");
+            System.out.println("Payment with ID " + id + " not found.");
+            return null; // Return null if payment not found
         }
         return paymentDatabase.get(id); // Retrieve payment by ID
     }
 
-    public static void removePaymentByID(int id, String password)
-            throws UnauthorizedPaymentAccessException, PaymentNotFoundException {
+    public static void removePaymentByID(int id, String password) {
 
         Payment payment = paymentDatabase.get(id);
 
         if (payment == null) {
-            throw new PaymentNotFoundException("Payment with ID " + id + " not found.");
-        }
-
-        if (!payment.isAuthorized(password)) {
-            throw new UnauthorizedPaymentAccessException("Unauthorized access: Incorrect password.");
+            System.out.println("Payment with ID " + id + " not found.");
+            return;
         }
 
         paymentDatabase.remove(id);
@@ -97,35 +90,19 @@ public abstract class Payment {
 
     // Setter methods
 
-    public void setSaleID(int saleID, String password) throws UnauthorizedPaymentAccessException {
-        if (!isAuthorized(password)) {
-            throw new UnauthorizedPaymentAccessException("Unauthorized access: Invalid password.");
-        }
+    public void setSaleID(int saleID) {
         this.saleID = saleID;
     }
 
-    public void setPaymentMethod(String paymentMethod, String password) throws UnauthorizedPaymentAccessException {
-        if (!isAuthorized(password)) {
-            throw new UnauthorizedPaymentAccessException("Unauthorized access: Invalid password.");
-        }
+    public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
-    public void setAmountPaid(double amountPaid, String password)
-            throws UnauthorizedPaymentAccessException, InsufficientAmountException {
-
-        if (!isAuthorized(password)) {
-            throw new UnauthorizedPaymentAccessException("Unauthorized access: Invalid password.");
-        }
-
-        if (amountPaid < 0) {
-            throw new InsufficientAmountException("Invalid amount: Payment amount cannot be negative.");
-        }
-
+    public void setAmountPaid(double amountPaid) {
         this.amountPaid = amountPaid;
     }
 
-    public abstract boolean processPayment() throws InsufficientAmountException;
+    public abstract boolean processPayment();
 
     public abstract boolean validatePayment();
 

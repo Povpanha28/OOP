@@ -16,7 +16,7 @@ public abstract class User{
     private static HashMap<Integer, User> userDatabase = new HashMap<>();
 
     // Constructor
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, String role) {
         this.userID = counter++;
         this.username = username;
         this.password = password;

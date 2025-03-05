@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import Entity.Exception.InsufficientAmountException;
 import Entity.Exception.NegativeNumberException;
-import Entity.Exception.OutOfStockException;
-import Entity.Exception.SaleNotFound;
 import Entity.Exception.UnauthorizedAccessException;
 
 public class Sale {
@@ -22,7 +20,7 @@ public class Sale {
 
     private static final String ADMIN_PASSWORD = "admin123";
 
-    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) throws OutOfStockException, InsufficientAmountException, NegativeNumberException {
+    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) throws InsufficientAmountException, NegativeNumberException {
         if (customerID <= 0 || productID <= 0) {
             throw new NegativeNumberException("Customer ID and Product ID must be valid positive numbers.");
         }
@@ -30,7 +28,7 @@ public class Sale {
             throw new InsufficientAmountException("Amount of product must be greater than zero.");
         }
         if (amountOfProduct > 100) { // Example stock limit
-            throw new OutOfStockException("Insufficient stock available for product ID: " + productID);
+            throw new InsufficientAmountException("Insufficient stock available for product ID: " + productID);
         }
         this.saleID = ++counter;
         this.customerID = customerID;
@@ -43,9 +41,9 @@ public class Sale {
     }
 
     // Static method to retrieve a sale by ID
-    public static Sale getSaleByID(int saleID) throws SaleNotFound {
+    public static Sale getSaleByID(int saleID){
         if (!salesMap.containsKey(saleID)) {
-            throw new SaleNotFound("Sale with ID " + saleID + " not found.");
+            System.out.println("Sale with ID " + saleID + " not found.");
         }
         return salesMap.get(saleID);
     }
@@ -140,5 +138,9 @@ public class Sale {
 
     public double calculateTotalPrice() {
         return totalPrice; // Default implementation
+    }
+
+    public void setDiscountRate(double d) {
+        throw new UnsupportedOperationException("Unimplemented method 'setDiscountRate'");
     }
 }

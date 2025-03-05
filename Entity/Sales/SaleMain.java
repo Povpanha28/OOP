@@ -1,13 +1,13 @@
 package Entity.Sales;
 
-import Entity.Exception.*;
+import Entity.ExceptionSrc.DiscountRateException;
 
 public class SaleMain {
     public static void main(String[] args) {
         try {
             // Creating a normal Sale
             System.out.println("----- Normal Sale -----");
-            Sale sale1 = new Sale(101, 2001, 3, 1500);
+            Sale sale1 = new Sale(1, 1, 3, 200);
             sale1.processSale();
             System.out.println(sale1);
 
@@ -37,6 +37,8 @@ public class SaleMain {
             } catch (DiscountRateException e) {
                 System.out.println(e.getMessage());
             }
+
+            System.out.println(Sale.getAllSales());Sale.getAllSales();
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());

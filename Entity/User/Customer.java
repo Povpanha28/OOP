@@ -124,7 +124,7 @@ public class Customer extends User implements Autentication {
         }
 
         // Add the new customer to the database
-        Customer customer = new Customer(username, password, email, paymentMethod, membershipLevel);
+        Customer customer = new Customer(username, password, email, paymentMethod, membershipLevel, membershipLevel);
         User.getUserDatabase().put(customer.getUserID(), customer);
         customerDatabase.put(customer.getCustomerID(), customer);
         System.out.println("Customer registered successfully! Customer ID: " + customer.getCustomerID());

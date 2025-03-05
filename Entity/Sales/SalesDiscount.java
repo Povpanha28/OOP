@@ -1,9 +1,9 @@
 package Entity.Sales;
 
-import Entity.Exception.DiscountRateException;
 import Entity.Exception.InsufficientAmountException;
 import Entity.Exception.NegativeNumberException;
 import Entity.Exception.OutOfStockException;
+import Entity.ExceptionSrc.DiscountRateException;
 
 public class SalesDiscount extends Sale {
     private double discountRate;
