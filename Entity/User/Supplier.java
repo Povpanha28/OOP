@@ -2,9 +2,7 @@ package Entity.User;
 
 import java.util.HashMap;
 
-import Entity.Exception.UnauthorizedAccessException;
-
-public class Supplier extends User implements Autentication {
+public class Supplier extends User{
     // Instance variables (Private for encapsulation)
     private String companyName;
     private String companyAddress;
@@ -56,6 +54,7 @@ public class Supplier extends User implements Autentication {
         Supplier supplier = supplierDatabase.get(id);
         if (supplier != null) {
             supplierDatabase.remove(id);
+            User.getUserDatabase().remove(id);
             System.out.println("Supplier with ID " + id + " removed successfully.");
         } else {
             System.out.println("Unauthorized access or supplier not found.");
@@ -97,14 +96,14 @@ public class Supplier extends User implements Autentication {
     }
 
     @Override
-    public void login() throws UnauthorizedAccessException {
+    public void login() {
         System.out.println("Attempting to log in...");
         String username = getUsername();
-        String password = getPassword(super.email, super.password);
+        String password = getPassword();
 
         for (Supplier supplier : supplierDatabase.values()) {
             if (supplier.getUsername().equals(username)
-                    && supplier.getPassword(super.email, super.password).equals(password)) {
+                    && supplier.getPassword().equals(password)) {
                 System.out.println("Login successful for Supplier: " + supplier.getCompanyName());
                 return;
             }

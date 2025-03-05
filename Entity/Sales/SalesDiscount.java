@@ -1,17 +1,13 @@
 package Entity.Sales;
 
-import Entity.Exception.InsufficientAmountException;
-import Entity.Exception.NegativeNumberException;
-import Entity.Exception.OutOfStockException;
-import Entity.ExceptionSrc.DiscountRateException;
 
 public class SalesDiscount extends Sale {
     private double discountRate;
 
-    public SalesDiscount(int customerID, int productID, int amountOfProduct,double totalPrice, double discountRate) throws InsufficientAmountException, NegativeNumberException, OutOfStockException, DiscountRateException {
+    public SalesDiscount(int customerID, int productID, int amountOfProduct,double totalPrice, double discountRate) {
         super(customerID, productID, amountOfProduct, totalPrice);
         if(discountRate < 0 || discountRate > 1){
-            throw new DiscountRateException("Discount cannot be under 0 or over 100%");
+            System.out.println("Discount cannot be under 0 or over 100%");
         }
         this.discountRate = discountRate;
     }
@@ -20,9 +16,9 @@ public class SalesDiscount extends Sale {
         return discountRate;
     }
 
-    public void setDiscountRate(double rate)throws  DiscountRateException{
+    public void setDiscountRate(double rate){
         if(discountRate < 0 || discountRate > 1){
-            throw new DiscountRateException("Discount cannot be under 0 or over 100%");
+            System.out.println("Discount cannot be under 0 or over 100%");
         }
         this.discountRate = rate;
     }

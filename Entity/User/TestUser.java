@@ -2,14 +2,14 @@ package Entity.User;
 
 public class TestUser {
     public static void main(String[] args) {
-        User supplier = new Supplier("Jack", "123", "Jack23@gmail.com", "Tesla", "123 St Amera", "012121212");
-        Supplier castedSupplier = (Supplier) supplier;
-        castedSupplier.register();
-        Employee employee = new Employee("Lis", "123", "Lis23@gmail.com", "Lis", "Cashier", 45, 250, "Cash");
+        User admin = new Admin("Admin", "11112222", "Admin123@gmail.com");
+        admin.register();
+        User employee = new Employee("Jack", "00001111", "Jack123@gmail.com", "Jack", "Cashier", 40, 250, "Cash", "012345345");
         employee.register();
-        // Customer customer = new Customer("Ngorl Ngorl", "321",
-        // "NgorlNgorl@yahoo.com", "CreditCard", "2");
-        // customer.register();
+        User customer = new Customer("Lisa", "12341234", "Lisa321@gmail.com", "Cash", 2);
+        customer.register();
+        User supplier = new Supplier("Horn", "13131313", "Horn22@gmail.com", "Alibaba", "123St123", "017828282");
+        supplier.register();
         System.out.println(User.getUserDatabase());
     }
 }

@@ -2,10 +2,6 @@ package Entity.Sales;
 
 import java.util.HashMap;
 
-import Entity.Exception.InsufficientAmountException;
-import Entity.Exception.NegativeNumberException;
-import Entity.Exception.UnauthorizedAccessException;
-
 public class Sale {
     private static int counter = 0;
     private final int saleID;
@@ -20,15 +16,15 @@ public class Sale {
 
     private static final String ADMIN_PASSWORD = "admin123";
 
-    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) throws InsufficientAmountException, NegativeNumberException {
+    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice){
         if (customerID <= 0 || productID <= 0) {
-            throw new NegativeNumberException("Customer ID and Product ID must be valid positive numbers.");
+            System.out.println("Customer ID and Product ID must be greater than zero.");
         }
         if (amountOfProduct <= 0) {
-            throw new InsufficientAmountException("Amount of product must be greater than zero.");
+            System.out.println("Amount of product must be greater than zero.");
         }
         if (amountOfProduct > 100) { // Example stock limit
-            throw new InsufficientAmountException("Insufficient stock available for product ID: " + productID);
+            System.out.println("Amount of product cannot exceed 100.");
         }
         this.saleID = ++counter;
         this.customerID = customerID;
@@ -79,29 +75,29 @@ public class Sale {
     }
 
     // Secure Setters - Only Admins Can Modify Data
-    public void setAmountOfProduct(int amount, String password) throws InsufficientAmountException, UnauthorizedAccessException{
+    public void setAmountOfProduct(int amount, String password){
         if (!isAuthorized(password)) {
-            throw new UnauthorizedAccessException("Unauthorized access: Only admins can change amount of product.");
+            System.out.println("Unauthorized access: Only admins can change amount of product.");
         }
         if (amount <= 0) {
-            throw new InsufficientAmountException("Amount of product must be greater than zero.");
+            System.out.println("Amount of product must be greater than zero.");
         }
         this.amountOfProduct = amount;
     }
 
-    public void setTotalPrice(int price, String password)throws NegativeNumberException, UnauthorizedAccessException {
+    public void setTotalPrice(int price, String password){
         if (!isAuthorized(password)) {
-            throw new UnauthorizedAccessException("Unauthorized access: Only admins can change total price.");
+            System.out.println("Unauthorized access: Only admins can change total price.");
         }
         if (price < 0) {
-            throw new NegativeNumberException("Total price cannot be negative.");
+            System.out.println("Total price cannot be negative.");
         }
         this.totalPrice = price;
     }
 
-    public void setSaleDate(String saleDate, String password)throws UnauthorizedAccessException {
+    public void setSaleDate(String saleDate, String password){
         if (!isAuthorized(password)) {
-            throw new UnauthorizedAccessException("Unauthorized access: Only admins can change sale date.");
+            System.out.println("Unauthorized access: Only admins can change sale date.");
         }
         this.saleDate = saleDate;
     }
@@ -111,16 +107,16 @@ public class Sale {
         return ADMIN_PASSWORD.equals(password);
     }
 
-    public void setCustomerID(int customerID, String password) throws UnauthorizedAccessException {
+    public void setCustomerID(int customerID, String password){
         if (!isAuthorized(password)) {
-            throw new UnauthorizedAccessException("Unauthorized access: Only admins can change sale date.");
+            System.out.println("Unauthorized access: Only admins can change customer ID.");
         }
         this.customerID = customerID;
     }
 
-    public void setProductID(int productID, String password) throws UnauthorizedAccessException {
+    public void setProductID(int productID, String password){
         if (!isAuthorized(password)) {
-            throw new UnauthorizedAccessException("Unauthorized access: Only admins can change sale date.");
+            System.out.println("Unauthorized access: Only admins can change product ID.");
         }
         this.productID = productID;
     }

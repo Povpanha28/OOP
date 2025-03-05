@@ -2,28 +2,28 @@ package Entity.User;
 
 import java.util.HashMap;
 
-import Entity.Exception.UnauthorizedAccessException;
-
-public class Employee extends User implements Autentication {
+public class Employee extends User{
     // Instance variables (Private for encapsulation)
     private String employeeName;
     private String employeeRole;
     private double workHours;
     private double employeeSalary;
     private String paymentMethod;
+    private String contact;
 
     // Static variables (Shared across all instances)
     private static HashMap<Integer, Employee> employeeDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
     public Employee(String username, String password, String email, String employeeName,
-            String employeeRole, double workHours, double employeeSalary, String paymentMethod) {
+            String employeeRole, double workHours, double employeeSalary, String paymentMethod, String contact) {
         super(username, password, email);
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
         this.workHours = workHours;
         this.employeeSalary = employeeSalary;
         this.paymentMethod = paymentMethod;
+        this.contact = contact;
     }
 
     public String getRole(){
@@ -38,6 +38,7 @@ public class Employee extends User implements Autentication {
     public static void removeEmployeeByID(int id) {
         if (employeeDatabase.containsKey(id)) {
             employeeDatabase.remove(id);
+            User.getUserDatabase().remove(id);
             System.out.println("Employee with ID " + id + " removed successfully.");
         } else {
             System.out.println("Employee not found.");
@@ -68,6 +69,10 @@ public class Employee extends User implements Autentication {
 
     public String getPaymentMethod() {
         return paymentMethod;
+    }
+
+    public String getContact() {
+        return contact;
     }
 
     // Setter methods
@@ -119,21 +124,30 @@ public class Employee extends User implements Autentication {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Employee [Name=" + employeeName + ", Role=" + employeeRole +
-                ", Salary=$" + employeeSalary + ", Work Hours=" + workHours + ", Payment Method=" + paymentMethod + "]";
+    public void setContact(String contact, String password) {
+        if (password.equals(this.password)) {
+            this.contact = contact;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
     }
 
     @Override
-    public void login() throws UnauthorizedAccessException {
+    public String toString() {
+        return "Employee [employeeName=" + employeeName + ", employeeRole=" + employeeRole + ", workHours=" + workHours
+                + ", employeeSalary=" + employeeSalary + ", paymentMethod=" + paymentMethod + ", contact=" + contact
+                + "]";
+    }
+
+    @Override
+    public void login(){
         System.out.println("Attempting to log in...");
         String username = getUsername();
-        String password = getPassword(super.email, super.password);
+        String password = getPassword();
 
         for (Employee employee : employeeDatabase.values()) {
             if (employee.getUsername().equals(username)
-                    && employee.getPassword(super.email, super.password).equals(password)) {
+                    && employee.getPassword().equals(password)) {
                 System.out.println("Login successful for Employee: " + employee.getEmployeeName());
                 return;
             }
