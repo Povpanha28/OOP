@@ -1,8 +1,5 @@
 package Entity.Sales;
 
-import java.util.HashMap;
-
-
 public abstract class Payment {
 
     private int paymentID;
@@ -13,7 +10,6 @@ public abstract class Payment {
     protected double amountPaid;
 
     private final static String adminPassword = "SecurePass123";
-    private static HashMap<Integer, Payment> paymentDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
     public Payment(int saleID, double amountPaid, String transactionDate, String paymentMethod) {
@@ -23,7 +19,6 @@ public abstract class Payment {
         this.paymentMethod = paymentMethod;
         this.amountPaid = amountPaid;
         this.transactionDate = transactionDate;
-        paymentDatabase.put(this.paymentID, this);
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -47,31 +42,6 @@ public abstract class Payment {
         return amountPaid;
     }
 
-    public static Payment getPaymentByID(int id) {
-        if (!paymentDatabase.containsKey(id)) {
-            System.out.println("Payment with ID " + id + " not found.");
-            return null; // Return null if payment not found
-        }
-        return paymentDatabase.get(id); // Retrieve payment by ID
-    }
-
-    public static void removePaymentByID(int id, String password) {
-
-        Payment payment = paymentDatabase.get(id);
-
-        if (payment == null) {
-            System.out.println("Payment with ID " + id + " not found.");
-            return;
-        }
-
-        paymentDatabase.remove(id);
-        System.out.println("Payment with ID " + id + " removed successfully.");
-    }
-
-    public static HashMap<Integer, Payment> getAllPayments() {
-        return paymentDatabase; // Retrieve all payments
-    }
-
     // Password
     protected boolean isAuthorized(String password) {
         return password.equals(adminPassword);
@@ -89,7 +59,6 @@ public abstract class Payment {
     }
 
     // Setter methods
-
     public void setSaleID(int saleID) {
         this.saleID = saleID;
     }
@@ -102,8 +71,15 @@ public abstract class Payment {
         this.amountPaid = amountPaid;
     }
 
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public void setPaymentID(int paymentID) {
+        this.paymentID = paymentID;
+    }
+
     public abstract boolean processPayment();
 
     public abstract boolean validatePayment();
-
 }

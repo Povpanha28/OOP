@@ -1,105 +1,80 @@
 package Entity.Sales;
 
-import Entity.ExceptionSrc.*;
-import java.util.Scanner;
+import Database.MySQLConnection;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaymentMain {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        // Menu for user interaction
-        while (true) {
-            System.out.println("\nChoose an option:");
-            System.out.println("1. Add a Cash Payment");
-            System.out.println("2. View Payment by ID");
-            System.out.println("3. Exit");
-            try {
-                String choiceInput = scanner.nextLine(); // Consume newline
-                new NumberOnlyException(choiceInput, "\\d+"); // Validate choice is numeric
-                choice = Integer.parseInt(choiceInput);
-                switch (choice) {
-                    case 1:
-                        try {
-                            // Add a Cash Payment
-                            System.out.print("Enter Sale ID: ");
-                            String saleIDInput = scanner.nextLine();
-                            new NumberOnlyException(saleIDInput, "\\d+"); // Validate that Sale ID is numeric
-                            int saleID = Integer.parseInt(saleIDInput);
+        // Create an ArrayList to store Payment objects
+        List<Payment> paymentList = new ArrayList<>();
 
-                            System.out.print("Enter Amount Paid: ");
-                            String amountPaidInput = scanner.nextLine();
-                            new NumberOnlyException(amountPaidInput, "\\d+(\\.\\d{1,2})?"); // Validate amount paid is
-                                                                                            // numeric
-                            double amountPaid = Double.parseDouble(amountPaidInput);
+        // Create CashPayment objects
+        Payment payment1 = new CashPayment(101, 500.0, "2025-03-05", "John Doe", 600.0);
+        Payment payment2 = new CashPayment(102, 300.0, "2025-03-05", "Jane Smith", 400.0);
 
-                            System.out.print("Enter Transaction Date (e.g., 2025-03-05): ");
-                            String transactionDate = scanner.nextLine();
+        // Add payments to the ArrayList
+        paymentList.add(payment1);
+        paymentList.add(payment2);
 
-                            System.out.print("Enter Cashier Name: ");
-                            String cashierName = scanner.nextLine();
+        // Add payments to the database
+        // addPaymentsToDatabase(paymentList);
 
-                            System.out.print("Enter Money Given by Customer: ");
-                            String moneyGivenInput = scanner.nextLine();
-                            new NumberOnlyException(moneyGivenInput, "\\d+(\\.\\d{1,2})?"); // Validate money given is
-                                                                                            // numeric
-                            double moneyGiven = Double.parseDouble(moneyGivenInput);
+        // Delete payment with paymentID 1
+        deletePaymentFromDatabase(4);
+    }
 
-                            // Create a CashPayment object
-                            CashPayment cashPayment = new CashPayment(saleID, amountPaid, transactionDate, cashierName,
-                                    moneyGiven);
+    // Method to add payments to the database
+    public static void addPaymentsToDatabase(List<Payment> payments) {
+        String query = "INSERT INTO payment (saleID, paymentMethod, amountPaid, transactionDate) VALUES (?, ?, ?, ?)";
 
-                            // Check for sufficient amount
-                            new InsufficientAmountException(moneyGiven, amountPaid);
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
 
-                            // Process payment and validate
-                            if (cashPayment.processPayment()) {
-                                cashPayment.validatePayment();
-                            }
+            // Loop through each payment and insert it into the database
+            for (Payment payment : payments) {
+                if (payment.processPayment() && payment.validatePayment()) {
+                    pstmt.setInt(1, payment.getSaleID());
+                    pstmt.setString(2, payment.getPaymentMethod());
+                    pstmt.setDouble(3, payment.getAmountPaid());
+                    pstmt.setString(4, payment.getTransactionDate());
 
-                            System.out.println("Payment added: " + cashPayment);
-                        } catch (InsufficientAmountException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        } catch (NumberOnlyException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        } catch (Exception e) {
-                            System.out.println("An unexpected error occurred: " + e.getMessage());
-                        }
-                        break;
-
-                    case 2:
-                        try {
-                            // View payment by ID
-                            System.out.print("Enter Payment ID to view: ");
-                            String paymentIDInput = scanner.nextLine();
-                            new NumberOnlyException(paymentIDInput, "\\d+"); // Validate Payment ID is numeric
-                            int paymentID = Integer.parseInt(paymentIDInput);
-
-                            Payment payment = Payment.getPaymentByID(paymentID);
-                            if (payment != null) {
-                                System.out.println(payment);
-                            } else {
-                                System.out.println("Payment with ID " + paymentID + " not found.");
-                            }
-                        } catch (NumberOnlyException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        } catch (Exception e) {
-                            System.out.println("An unexpected error occurred: " + e.getMessage());
-                        }
-                        break;
-
-                    case 3:
-                        // Exit
-                        System.out.println("Exiting...");
-                        scanner.close();
-                        return;
-
-                    default:
-                        System.out.println("Invalid option. Please try again.");
-                        break;
+                    pstmt.addBatch(); // Add to batch for batch execution
+                } else {
+                    System.out.println("Payment validation failed for: " + payment);
                 }
-            } catch (NumberOnlyException e) {
-                System.out.println(e.getMessage());
             }
+
+            // Execute the batch of insert statements
+            pstmt.executeBatch();
+            System.out.println("Payments added to the database successfully!");
+
+        } catch (SQLException e) {
+            System.out.println("Error adding payments to the database!");
+            e.printStackTrace();
+        }
+    }
+
+    // Method to delete payment from the database
+    public static void deletePaymentFromDatabase(int paymentID) {
+        String query = "DELETE FROM payment WHERE paymentID = ?";
+
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setInt(1, paymentID);
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Payment with ID " + paymentID + " deleted successfully!");
+            } else {
+                System.out.println("No payment found with ID " + paymentID);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error deleting payment from the database!");
+            e.printStackTrace();
         }
     }
 }

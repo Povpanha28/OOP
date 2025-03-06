@@ -22,6 +22,9 @@ public class SalesMain {
 
         // Add sales to the database
         addSalesToDatabase(saleList);
+
+        // Delete sale from the database
+        deleteSaleFromDatabase(2); // Example: Delete sale with sale_id 2
     }
 
     // Method to add sales to the database
@@ -58,6 +61,27 @@ public class SalesMain {
     
         } catch (SQLException e) {
             System.out.println("Error adding sales to the database!");
+            e.printStackTrace();
+        }
+    }
+
+    // Method to delete sale from the database
+    public static void deleteSaleFromDatabase(int saleID) {
+        String query = "DELETE FROM sales WHERE sale_id = ?";
+
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setInt(1, saleID);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Sale with ID " + saleID + " deleted successfully!");
+            } else {
+                System.out.println("No sale found with ID " + saleID);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error deleting sale from the database!");
             e.printStackTrace();
         }
     }

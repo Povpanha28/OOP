@@ -8,13 +8,7 @@ public class DiscountProduct extends Product {
                            String productDescription, String addedDate, String supplierID, 
                            double discountPercentage, String password) throws UnauthorizedAccessException {
         super(productName, productPrice, productQty, addedDate, supplierID);
-
-        if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized to create DiscountProduct.");
-        }
-        
-        setProductDescription(productDescription, password);
-        setDiscountPercentage(discountPercentage, password); // Ensures validation
+        this.discountPercentage = discountPercentage;
     }
 
     // Implement abstract method from Product class
@@ -31,10 +25,12 @@ public class DiscountProduct extends Product {
     // Set Discount Percentage with authentication
     public void setDiscountPercentage(double discountPercentage, String password) throws UnauthorizedAccessException {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized to set discount percentage.");
+            System.out.println("Unauthorized access. Please provide the correct password.");
+            return;
         }
         if (discountPercentage < 0 || discountPercentage > 100) {
-            throw new IllegalArgumentException("Invalid discount. It must be between 0 and 100.");
+            System.out.println("Invalid discount. It must be between 0 and 100.");
+            return;
         }
         this.discountPercentage = discountPercentage;
     }

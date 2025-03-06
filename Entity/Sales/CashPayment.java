@@ -29,10 +29,15 @@ public class CashPayment extends Payment {
         calculateChange();  // Recalculate change whenever moneyGiven changes
     }
 
+    public void setCashierName(String cashierName) {
+        this.cashierName = cashierName;
+    }
+
     // Getter for change
     public double getChange() {
         return change;
     }
+    
 
     // Method to calculate change
     private void calculateChange() {
