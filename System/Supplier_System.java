@@ -1,5 +1,5 @@
 package System;
-import Entity.Supplier;
+import Entity.User.Supplier;
 public class Supplier_System {
     @SuppressWarnings("unused")
     public static void main(String[] args) {

@@ -2,139 +2,97 @@ package Entity.User;
 
 import java.util.HashMap;
 
-public class Customer implements Autentication {
-    // Instance variables (Private for encapsulation)
-    private int customerID;
-    private String customerName;
-    private String customerContact;
-    private String customerAddress;
-    private int password;
-    private String userName;
+public class Customer extends User{
+    // Instance variables
+    private String paymentMethod;
+    private int membershipLevel;
 
-    // Static variable (Shared across all instances)
-    private static int totalCustomers = 0;
-    // Define HashMap for customers
-    private static HashMap<Integer, Customer> customers = new HashMap<>();
+    // Static variables
+    private static HashMap<Integer, Customer> customerDatabase = new HashMap<>();
 
-    // Static function to add customer
-    // public static void addCustomer(int customerID, String customerName, String customerContact, String customerAddress, int password, String userName) {
-    //     customers.put(customerID, new Customer(customerID, customerName, customerContact, customerAddress, password, userName));
-    // }
-
-    // Static function to remove customer
-    public static void removeCustomer(int customerID) {
-        if (customers.remove(customerID) != null) {
-            totalCustomers--; // Decrement total customer count
-        }
+    // Constructor
+    public Customer(String username, String password, String email, String paymentMethod, int membershipLevel) {
+        super(username, password, email);
+        this.paymentMethod = paymentMethod;
+        this.membershipLevel = membershipLevel;
     }
 
-    // Static function to count total customers
-    public static int totalCustomer() {
-        return customers.size();
+    public String getRole() {
+        return "Customer";
     }
 
-    // Constructor for register
-    public Customer(int customerID, String customerName, String customerContact, String customerAddress, int password, String userName) {
-        this.customerID = customerID;
-        this.customerName = customerName;
-        this.customerContact = customerContact;
-        this.customerAddress = customerAddress;
-        this.password = password;
-        this.userName = userName;
-        totalCustomers++; // Increment total customer count
+    // Static Methods
+    public static Customer getCustomerByID(int id) {
+        return customerDatabase.getOrDefault(id, null);
     }
 
-    // Static function to find customer by ID
-    public static Customer findCustomer(int customerID) {
-        return customers.get(customerID);
-    }
-
-    // Static function to authenticate customer
-    public static void authenticateCustomer(String userName, int password) {
-        boolean loginSuccessful = false;
-        for (Customer customer : customers.values()) {
-            if (customer.getUserName().equals(userName) && customer.getCustomerPass() == password) {
-                System.out.println("Login successful.");
-                loginSuccessful = true;
-                break;
-            }
-        }
-        if (!loginSuccessful) {
-            System.out.println("Login failed.");
-        }
-        
-    }
-
-    // Static method to display all customers
-    public static void displayAllCustomers() {
-        for (Customer customer : customers.values()) {
-            System.out.println(customer.getCustomerDetails());
-        }
-    }
-
-    // Getter methods (Public: Provides controlled access to private variables)
-    public int getCustomerID() {
-        return customerID;
-    }
-
-    public String getCustomerContact() {
-        return customerContact;
-    }
-
-    public String getCustomerAddress() {
-        return customerAddress;
-    }
-
-    public static int getTotalCustomers() {
-        return totalCustomers;
-    }
-
-    public int getCustomerPass() {
-        return password;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    // Setter methods (Public: Allows modifying private variables with validation)
-    public void changeCustomerPass(int oldPassword, int newPassword) {
-        if (this.password == oldPassword) {
-            this.password = newPassword;
-            System.out.println("Password changed successfully.");
+    public static void removeCustomerByID(int id) {
+        if (customerDatabase.containsKey(id)) {
+            customerDatabase.remove(id);
+            User.getUserDatabase().remove(id);
+            System.out.println("Customer with ID " + id + " removed successfully.");
         } else {
-            System.out.println("Incorrect old password. Password change failed.");
+            System.out.println("Customer not found.");
         }
     }
 
-    public void changeUsername(String newUserName) {
-        this.userName = newUserName;
+    public static HashMap<Integer, Customer> getCustomerDatabase() {
+        return customerDatabase;
     }
 
-    public void setCustomerAddress(String customerAddress) {
-        this.customerAddress = customerAddress;
+    // Getter Methods
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
-    // Method with local variable scope
-    public String getCustomerDetails() {
-        return "Customer " + this.customerID + ": " + this.customerName + ", Contact: " + this.customerContact + ", Address: " + this.customerAddress;
+    public int getMembershipLevel() {
+        return membershipLevel;
+    }
+
+    // Setter Methods with Authorization
+    public void setPaymentMethod(String paymentMethod, String password) {
+        if (password.equals(this.password)) {
+            this.paymentMethod = paymentMethod;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
+    }
+
+    public void setMembershipLevel(int membershipLevel, String password) {
+        if (password.equals(this.password)) {
+            this.membershipLevel = membershipLevel;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Customer [Username=" + getUsername() + ", Email=" + getEmail() + ", Payment Method=" + paymentMethod
+                + ", Membership Level=" + membershipLevel + "]";
     }
 
     @Override
     public void login() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
+        System.out.println("Attempting to log in as a customer...");
+        for (Customer customer : customerDatabase.values()) {
+            if (customer.getUsername().equals(getUsername()) && customer.getPassword().equals(getPassword())) {
+                System.out.println("Login successful for Customer: " + customer.getUsername());
+                return;
+            }
+        }
+        System.out.println("Login failed. Invalid username or password.");
     }
 
     @Override
     public void register() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'register'");
+        System.out.println("Registering a new customer...");
+        if (customerDatabase.containsKey(this.getUserID())) {
+            System.out.println("Customer already registered.");
+            return;
+        }
+        customerDatabase.put(this.getUserID(), this);
+        User.getUserDatabase().put(this.getUserID(), this);
+        System.out.println("Customer registered successfully! User ID: " + this.getUserID());
     }
-
-
 }
