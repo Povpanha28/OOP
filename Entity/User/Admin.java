@@ -1,73 +1,57 @@
 package Entity.User;
 
-import java.util.HashMap;
+import Database.MySQLConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class Admin extends User{
-    private int adminID;
-    private static int totalAdmins = 1;
+public class Admin extends User {
     private static final String role = "Admin";
-
-    // Static admin database
-    private static HashMap<Integer, Admin> adminDatabase = new HashMap<>();
 
     // Constructor
     public Admin(String username, String password, String email) {
         super(username, password, email);
-        this.adminID = totalAdmins++;
     }
 
+    @Override
     public String getRole() {
         return role;
     }
 
-    public int getAdminID() {
-        return adminID;
-    }
-
-    public static HashMap<Integer, Admin> getAdminDatabase() {
-        return adminDatabase;
-    }
-
-    public static Admin getAdminByID(int id) {
-        return adminDatabase.getOrDefault(id, null);
-    }
-
-    public static void removeAdminByID(int id) {
-        if (adminDatabase.containsKey(id)) {
-            adminDatabase.remove(id);
-            User.getUserDatabase().remove(id);
-            System.out.println("Admin with ID " + id + " removed successfully.");
-        } else {
-            System.out.println("Admin not found.");
-        }
-    }
-
+    // Override updateUserInDatabase to include admin-specific fields if needed
     @Override
-    public void login() {
-        System.out.println("Attempting to log in as Admin...");
-        for (Admin admin : adminDatabase.values()) {
-            if (admin.getUsername().equals(getUsername()) && admin.getPassword().equals(getPassword())) {
-                System.out.println("Login successful for Admin: " + admin.getUsername());
-                return;
-            }
+    protected void updateUserInDatabase() {
+        String query = "UPDATE user SET username = ?, password = ?, email = ? WHERE userID = ?";
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, getUsername());
+            preparedStatement.setString(2, getPassword());
+            preparedStatement.setString(3, getEmail());
+            preparedStatement.setInt(4, getUserID());
+            preparedStatement.executeUpdate();
+            System.out.println("Admin updated successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        System.out.println("Login failed. Invalid username or password.");
     }
 
     @Override
     public void register() {
-        System.out.println("Registering new Admin...");
-        if (adminDatabase.containsKey(this.getUserID())) {
-            System.out.println("Admin already registered.");
-            return;
+        String query = "INSERT INTO user (username, password, email, role) VALUES (?, ?, ?, 'Admin')";
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, getUsername());
+            preparedStatement.setString(2, getPassword());
+            preparedStatement.setString(3, getEmail());
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                int userID = resultSet.getInt(1);
+                System.out.println("Admin registered successfully with ID: " + userID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        adminDatabase.put(this.getUserID(), this);
-        User.getUserDatabase().put(this.getUserID(), this);
-        System.out.println("Admin registered successfully! Admin ID: " + this.getUserID());
-    }
-
-    @Override
-    public String toString() {
-        return "Admin [ID=" + adminID + ", Username=" + getUsername() + "]";
     }
 }
