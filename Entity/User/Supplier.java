@@ -2,7 +2,7 @@ package Entity.User;
 
 import java.util.HashMap;
 
-public class Supplier extends User implements Autentication {
+public class Supplier extends User{
     // Instance variables (Private for encapsulation)
     private String companyName;
     private String companyAddress;
@@ -11,11 +11,16 @@ public class Supplier extends User implements Autentication {
     private static HashMap<Integer, Supplier> supplierDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Supplier(String username, String password, String email, String role, String companyName,
+    public Supplier(String username, String password, String email, String companyName,
             String companyAddress, String companyContact) {
-        super(username, password, email, role);
+        super(username, password, email);
         this.companyName = companyName;
         this.companyAddress = companyAddress;
+        this.companyContact = companyContact;
+    }
+
+    public String getRole() {
+        return "Supplier";
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -49,6 +54,7 @@ public class Supplier extends User implements Autentication {
         Supplier supplier = supplierDatabase.get(id);
         if (supplier != null) {
             supplierDatabase.remove(id);
+            User.getUserDatabase().remove(id);
             System.out.println("Supplier with ID " + id + " removed successfully.");
         } else {
             System.out.println("Unauthorized access or supplier not found.");
@@ -63,12 +69,20 @@ public class Supplier extends User implements Autentication {
         }
     }
 
-    public void setCompanyAddress(String companyAddress) {
-        this.companyAddress = companyAddress;
+    public void setCompanyAddress(String companyAddress, String password) {
+        if (password.equals(this.password)) {
+            this.companyAddress = companyAddress;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
     }
 
-    public void setCompanyContact(String companyContact) {
-        this.companyContact = companyContact;
+    public void setCompanyContact(String companyContact, String password) {
+        if (password.equals(this.password)) {
+            this.companyContact = companyContact;
+        } else {
+            System.out.println("Unauthorized access.");
+        }
     }
 
     public static void setSupplierDatabase(HashMap<Integer, Supplier> supplierDatabase) {
@@ -85,11 +99,11 @@ public class Supplier extends User implements Autentication {
     public void login() {
         System.out.println("Attempting to log in...");
         String username = getUsername();
-        String password = getPassword(super.email, super.password);
+        String password = getPassword();
 
         for (Supplier supplier : supplierDatabase.values()) {
             if (supplier.getUsername().equals(username)
-                    && supplier.getPassword(super.email, super.password).equals(password)) {
+                    && supplier.getPassword().equals(password)) {
                 System.out.println("Login successful for Supplier: " + supplier.getCompanyName());
                 return;
             }
@@ -101,27 +115,16 @@ public class Supplier extends User implements Autentication {
     @Override
     public void register() {
         System.out.println("Registering a new supplier...");
-        String username = getUsername();
-        String password = getPassword(super.email, super.password);
-        String email = getEmail(super.email, super.password);
-        String role = getRole();
-        String companyName = this.companyName;
-        String companyAddress = this.companyAddress;
-        String companyContact = this.companyContact;
-
-        // Check if the username already exists
-        for (Supplier supplier : supplierDatabase.values()) {
-            if (supplier.getUsername().equals(username)) {
-                System.out.println("Registration failed. Username already exists.");
-                return;
-            }
+        
+        if (supplierDatabase.containsKey(this.getUserID())) {
+            System.out.println("Supplier already registered.");
+            return;
         }
-
-        // Add the new supplier to the database
-        Supplier newSupplier = new Supplier(username, password, email, role, companyName, companyAddress, companyContact);
-        User.getUserDatabase().put(newSupplier.getUserID(), newSupplier);
-        supplierDatabase.put(newSupplier.getUserID(), newSupplier);
-        System.out.println("Supplier registered successfully! User ID: " + newSupplier.getUserID());
+    
+        supplierDatabase.put(this.getUserID(), this);
+        User.getUserDatabase().put(this.getUserID(), this); // Now safe to add
+        System.out.println("Supplier registered successfully! User ID: " + this.getUserID());
     }
+    
 
 }
