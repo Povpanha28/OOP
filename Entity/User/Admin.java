@@ -15,14 +15,19 @@ public class Admin extends User {
     public Admin(String username) {
         super(username);
     }
-    //getter
-    protected String getpass(){
+
+    // Getters
+    protected String getpass() {
         return password;
     }
-    protected String getEmail(){
-        return email;
+
+    protected String getPassword() {
+        return password;
     }
 
+    protected String getEmail() {
+        return email;
+    }
 
     @Override
     public String getRole() {
@@ -46,34 +51,10 @@ public class Admin extends User {
         }
     }
 
-    @Override
-    public void register() {
-        String query = "INSERT INTO user (username, password, email, role) VALUES (?, ?, ?, 'Admin')";
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, getUsername());
-            preparedStatement.setString(2, getPassword());
-                        preparedStatement.setString(3, getEmail());
-                        preparedStatement.executeUpdate();
-                        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-                        if (resultSet.next()) {
-                            int userID = resultSet.getInt(1);
-                            System.out.println("Admin registered successfully with ID: " + userID);
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                private String getPassword() {
-                    // TODO Auto-generated method stub
-                    throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
-                }
-            
-            
-                public void removeUser(String userID) {
+    public void removeUser(String userID) {
         String query = "DELETE FROM user WHERE userID = ?";
         try (Connection connection = MySQLConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, Integer.parseInt(userID));
             preparedStatement.executeUpdate();
             System.out.println("Admin removed successfully!");
@@ -82,12 +63,42 @@ public class Admin extends User {
         }
     }
 
-
     @Override
-    public void login() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
+    public void login(String inputUsername, String inputPassword) {
+        // Query to retrieve both username and password from the database
+        String query = "SELECT username, password FROM admin WHERE username = ?";
+        
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            // Set the username parameter in the query
+            preparedStatement.setString(1, inputUsername);
+            
+            // Execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+            // Check if the username exists in the database
+            if (resultSet.next()) {
+                // Retrieve the stored username and password from the database
+                String storedUsername = resultSet.getString("username");
+                String storedPassword = resultSet.getString("password");
+                
+                // Compare the input username and password with the stored values
+                if (storedUsername.equals(inputUsername) && storedPassword.equals(inputPassword)) {
+                    System.out.println("Admin login successful!");
+                } else {
+                    System.out.println("Invalid username or password.");
+                }
+            } else {
+                System.out.println("Admin username not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-    
 
+    public static void main(String[] args) {
+        Admin admin = new Admin("Youdy");
+        admin.login("Youdy", "12345");
+    }
 }

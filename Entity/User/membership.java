@@ -8,7 +8,7 @@ import Database.MySQLConnection;
 
 
 public class membership extends User {
-    
+
     // New constructor with default values for paymentMethod and membershipLevel
     public membership(String username,int user_id) {
         super(username, user_id);
@@ -18,6 +18,7 @@ public class membership extends User {
         super(username);
 
     }
+
 
     @Override
     public String getRole() {
@@ -39,8 +40,7 @@ public class membership extends User {
     }
 
     @Override
-    public void login() {
-        // TODO Auto-generated method stub
+    public void login(String username, String password) {
         throw new UnsupportedOperationException("Unimplemented method 'login'");
     }
 }
