@@ -12,6 +12,7 @@ public class ShopManagementGUI {
     private static JPanel centerPanel, rightPanel;
     private static JFrame frame;
     private static Map<String, CartItem> cart; // Track product, quantity, and price
+    private static JButton checkoutButton; // The checkout button to trigger checkout
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> createAndShowGUI());
@@ -92,21 +93,33 @@ public class ShopManagementGUI {
         }
 
         frame.add(centerPanel, BorderLayout.CENTER);
+
+        // Create Checkout Button
+        checkoutButton = new JButton("Checkout");
+        checkoutButton.setFont(new Font("Arial", Font.BOLD, 14));
+        checkoutButton.setForeground(Color.WHITE);
+        checkoutButton.setBackground(Color.BLUE);
+        checkoutButton.setPreferredSize(new Dimension(180, 40));
+        checkoutButton.addActionListener(e -> checkout());
+        checkoutButton.setVisible(true); // Initially hide the checkout button
+
+        rightPanel.add(checkoutButton);
+
         frame.setVisible(true);
     }
 
     private static class CategoryButtonListener implements ActionListener {
 
         private String category;
-    
+
         public CategoryButtonListener(String category) {
             this.category = category;
         }
-    
+
         @Override
         public void actionPerformed(ActionEvent e) {
             centerPanel.removeAll(); // Clear previous products
-    
+
             String[][] productData = {
                 {"Shirt", "Product 1", "20.99"},
                 {"Pant", "Product 2", "30.50"},
@@ -115,42 +128,41 @@ public class ShopManagementGUI {
                 {"Latest", "Product 5", "25.75"},
                 {"Shoes", "Product 6", "40.00"}
             };
-    
+
             for (String[] data : productData) {
                 String category = data[0];
                 String productName = data[1];
                 double price = Double.parseDouble(data[2]);
-    
+
                 // Only show items that match the selected category, or all items if "All Items" is clicked
                 if (this.category.equals("All Items") || category.equals(this.category)) {
                     JPanel productPanel = new JPanel(new BorderLayout());
                     productPanel.setBackground(Color.LIGHT_GRAY);
                     productPanel.setPreferredSize(new Dimension(150, 100));
-    
+
                     JLabel productLabel = new JLabel(productName + " ($" + price + ")", SwingConstants.CENTER);
-    
+
                     JButton addButton = new JButton("+");
                     addButton.setFont(new Font("Arial", Font.BOLD, 12));
                     addButton.setForeground(Color.WHITE);
                     addButton.setBackground(Color.GREEN);
                     addButton.setPreferredSize(new Dimension(30, 30));
                     addButton.addActionListener(e1 -> addToCart(productName, price));
-    
+
                     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                     buttonPanel.add(addButton);
-    
+
                     productPanel.add(productLabel, BorderLayout.CENTER);
                     productPanel.add(buttonPanel, BorderLayout.NORTH);
-    
+
                     centerPanel.add(productPanel); // Add product panel to the center
                 }
             }
-    
+
             centerPanel.revalidate(); // Revalidate the layout after updating
             centerPanel.repaint(); // Repaint the layout to reflect changes
         }
     }
-    
 
     private static void addToCart(String product, double price) {
         cart.put(product, new CartItem(product, price, cart.getOrDefault(product, new CartItem(product, price, 0)).getQuantity() + 1));
@@ -167,42 +179,47 @@ public class ShopManagementGUI {
                 JPanel itemPanel = new JPanel(new BorderLayout());
                 itemPanel.setBackground(Color.LIGHT_GRAY);
                 itemPanel.setPreferredSize(new Dimension(180, 60)); // Fixed size for each cart item
-
+    
                 JLabel itemLabel = new JLabel(item.getName() + " (x" + item.getQuantity() + ") - $" + item.getTotalPrice());
-
+    
                 JButton addButton = new JButton("+");
                 addButton.setFont(new Font("Arial", Font.BOLD, 12));
                 addButton.setForeground(Color.WHITE);
                 addButton.setBackground(Color.GREEN);
                 addButton.setPreferredSize(new Dimension(30, 30));
                 addButton.addActionListener(e -> increaseQuantity(item.getName()));
-
+    
                 JButton removeButton = new JButton("-");
                 removeButton.setFont(new Font("Arial", Font.BOLD, 12));
                 removeButton.setForeground(Color.WHITE);
                 removeButton.setBackground(Color.RED);
                 removeButton.setPreferredSize(new Dimension(30, 30));
                 removeButton.addActionListener(e -> removeFromCart(item.getName()));
-
+    
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                 buttonPanel.add(addButton);
                 buttonPanel.add(removeButton);
-
+    
                 itemPanel.add(itemLabel, BorderLayout.CENTER);
                 itemPanel.add(buttonPanel, BorderLayout.EAST);
-
+    
                 rightPanel.add(itemPanel);
                 totalPrice += item.getTotalPrice();
             }
-
+    
             // Display total price
             JLabel totalLabel = new JLabel("Total: $" + totalPrice);
             rightPanel.add(totalLabel, BorderLayout.SOUTH);
         }
-
+    
+        // Always show the checkout button
+        rightPanel.add(checkoutButton, BorderLayout.SOUTH);
+    
+        // Ensure the right panel is updated
         rightPanel.revalidate();
         rightPanel.repaint();
     }
+    
 
     private static void removeFromCart(String product) {
         CartItem item = cart.get(product);
@@ -218,6 +235,20 @@ public class ShopManagementGUI {
         CartItem item = cart.get(product);
         item.setQuantity(item.getQuantity() + 1);
         updateCartDisplay();
+    }
+
+    private static void checkout() {
+        double totalPrice = 0;
+        for (CartItem item : cart.values()) {
+            totalPrice += item.getTotalPrice();
+        }
+
+        String message = "Total amount to pay: $" + totalPrice;
+        JOptionPane.showMessageDialog(frame, message, "Checkout", JOptionPane.INFORMATION_MESSAGE);
+        
+        // Optionally reset the cart after checkout
+        cart.clear();
+        updateCartDisplay(); // Update display after clearing the cart
     }
 
     // CartItem class to store product, price, and quantity
