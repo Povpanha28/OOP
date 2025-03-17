@@ -2,78 +2,223 @@ package Entity.Sales;
 
 import Database.MySQLConnection;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Scanner;
 
 public class PaymentMain {
+
     public static void main(String[] args) {
-        // Create an ArrayList to store Payment objects
-        List<Payment> paymentList = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
 
-        // Create CashPayment objects
-        Payment payment1 = new CashPayment(101, 500.0, "2025-03-05", "John Doe", 600.0);
-        Payment payment2 = new CashPayment(102, 300.0, "2025-03-05", "Jane Smith", 400.0);
+        try (Connection connection = MySQLConnection.getConnection()) {
+            while (true) {
+                System.out.println("\n===== Payment Management System =====");
+                System.out.println("1. Add Cash Payment");
+                System.out.println("2. Delete Payment");
+                System.out.println("3. Update Payment");
+                System.out.println("4. View Payments");  // New Feature
+                System.out.println("5. Exit");
+                System.out.print("Enter your choice: ");
 
-        // Add payments to the ArrayList
-        paymentList.add(payment1);
-        paymentList.add(payment2);
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input! Please enter a number.");
+                    scanner.next();  
+                    continue;
+                }
 
-        // Add payments to the database
-        // addPaymentsToDatabase(paymentList);
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
 
-        // Delete payment with paymentID 1
-        deletePaymentFromDatabase(4);
-    }
-
-    // Method to add payments to the database
-    public static void addPaymentsToDatabase(List<Payment> payments) {
-        String query = "INSERT INTO payment (saleID, paymentMethod, amountPaid, transactionDate) VALUES (?, ?, ?, ?)";
-
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-            // Loop through each payment and insert it into the database
-            for (Payment payment : payments) {
-                if (payment.processPayment() && payment.validatePayment()) {
-                    pstmt.setInt(1, payment.getSaleID());
-                    pstmt.setString(2, payment.getPaymentMethod());
-                    pstmt.setDouble(3, payment.getAmountPaid());
-                    pstmt.setString(4, payment.getTransactionDate());
-
-                    pstmt.addBatch(); // Add to batch for batch execution
-                } else {
-                    System.out.println("Payment validation failed for: " + payment);
+                switch (choice) {
+                    case 1:
+                        addPayment(scanner, connection);
+                        break;
+                    case 2:
+                        deletePayment(scanner, connection);
+                        break;
+                    case 3:
+                        updatePayment(scanner, connection);
+                        break;
+                    case 4:
+                        viewPayments(connection); // New Feature
+                        break;
+                    case 5:
+                        System.out.println("Exiting System...");
+                        scanner.close();
+                        return;
+                    default:
+                        System.out.println("Invalid Choice! Please Try Again.");
                 }
             }
-
-            // Execute the batch of insert statements
-            pstmt.executeBatch();
-            System.out.println("Payments added to the database successfully!");
-
         } catch (SQLException e) {
-            System.out.println("Error adding payments to the database!");
+            System.out.println("Database Connection Error! Please check your connection.");
             e.printStackTrace();
         }
     }
 
-    // Method to delete payment from the database
-    public static void deletePaymentFromDatabase(int paymentID) {
-        String query = "DELETE FROM payment WHERE paymentID = ?";
+    private static void addPayment(Scanner scanner, Connection connection) {
+        System.out.println("\nEnter Cash Payment Details:");
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-            pstmt.setInt(1, paymentID);
-            int affectedRows = pstmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                System.out.println("Payment with ID " + paymentID + " deleted successfully!");
+        int saleID;
+        while (true) {
+            System.out.print("Enter Sale ID: ");
+            if (scanner.hasNextInt()) {
+                saleID = scanner.nextInt();
+                if (saleID > 0) break;
+                System.out.println("Sale ID must be a positive number.");
             } else {
-                System.out.println("No payment found with ID " + paymentID);
+                System.out.println("Invalid input! Please enter a valid Sale ID.");
             }
+            scanner.next(); 
+        }
 
+        double amountPaid;
+        while (true) {
+            System.out.print("Enter Amount Paid: ");
+            if (scanner.hasNextDouble()) {
+                amountPaid = scanner.nextDouble();
+                if (amountPaid > 0) break;
+                System.out.println("Amount Paid must be greater than zero.");
+            } else {
+                System.out.println("Invalid input! Please enter a valid amount.");
+            }
+            scanner.next();
+        }
+
+        scanner.nextLine();
+
+        System.out.print("Enter Cashier Name: ");
+        String cashierName = scanner.nextLine();
+
+        double moneyGiven;
+        while (true) {
+            System.out.print("Enter Money Given by Customer: ");
+            if (scanner.hasNextDouble()) {
+                moneyGiven = scanner.nextDouble();
+                if (moneyGiven >= amountPaid) break;
+                System.out.println("Money given must be at least equal to the amount paid.");
+            } else {
+                System.out.println("Invalid input! Please enter a valid amount.");
+            }
+            scanner.next();
+        }
+
+        CashPayment cashPayment = new CashPayment(saleID, amountPaid, cashierName, moneyGiven);
+        addPaymentToDatabase(cashPayment, connection);
+    }
+
+    private static void addPaymentToDatabase(CashPayment cashPayment, Connection connection) {
+        String query = "INSERT INTO payment (paymentMethod, amountPaid, paymentDate, cashierName) VALUES (?, ?, ?, ?)";
+    
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, cashPayment.getPaymentMethod());
+            pstmt.setDouble(2, cashPayment.getAmountPaid());
+            pstmt.setString(3, LocalDate.now().toString());
+            pstmt.setString(4, cashPayment.getCashierName());
+    
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println(rowsInserted > 0 ? "Payment added successfully!" : "Error: Payment not added.");
+        } catch (SQLException e) {
+            System.out.println("Error adding payment to the database!");
+            e.printStackTrace();
+        }
+    }
+
+    private static void deletePayment(Scanner scanner, Connection connection) {
+        System.out.print("\nEnter Payment ID to Delete: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("Invalid input! Please enter a valid Payment ID.");
+            scanner.next();
+            return;
+        }
+        int paymentID = scanner.nextInt();
+
+        String query = "DELETE FROM payment WHERE paymentID = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, paymentID);
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println(rowsAffected > 0 ? "Payment deleted successfully!" : "No payment found with that ID.");
         } catch (SQLException e) {
             System.out.println("Error deleting payment from the database!");
+            e.printStackTrace();
+        }
+    }
+
+    private static void updatePayment(Scanner scanner, Connection connection) {
+        System.out.print("\nEnter Payment ID to Update: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("Invalid input! Please enter a valid Payment ID.");
+            scanner.next();
+            return;
+        }
+        int paymentID = scanner.nextInt();
+
+        System.out.println("\nChoose what to update:");
+        System.out.println("1. Amount Paid");
+        System.out.println("2. Cashier Name");
+        System.out.print("Enter your choice: ");
+
+        if (!scanner.hasNextInt()) {
+            System.out.println("Invalid input! Please enter a valid option.");
+            scanner.next();
+            return;
+        }
+
+        int updateChoice = scanner.nextInt();
+        scanner.nextLine();
+        String query = "";
+        boolean hasUpdate = false;
+
+        try {
+            switch (updateChoice) {
+                case 1:
+                    System.out.print("Enter New Amount Paid: ");
+                    double newAmountPaid = scanner.nextDouble();
+                    query = "UPDATE payment SET amountPaid = ? WHERE paymentID = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setDouble(1, newAmountPaid);
+                        pstmt.setInt(2, paymentID);
+                        hasUpdate = pstmt.executeUpdate() > 0;
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Enter New Cashier Name: ");
+                    String newCashierName = scanner.nextLine();
+                    query = "UPDATE payment SET cashierName = ? WHERE paymentID = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setString(1, newCashierName);
+                        pstmt.setInt(2, paymentID);
+                        hasUpdate = pstmt.executeUpdate() > 0;
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid choice! No updates performed.");
+                    return;
+            }
+
+            System.out.println(hasUpdate ? "Payment updated successfully!" : "No payment found with that ID.");
+        } catch (SQLException e) {
+            System.out.println("Error updating payment!");
+            e.printStackTrace();
+        }
+    }
+
+    private static void viewPayments(Connection connection) {
+        String query = "SELECT * FROM payment";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            System.out.println("\n===== Payment Records =====");
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("paymentID") +
+                        ", Method: " + rs.getString("paymentMethod") +
+                        ", Amount: " + rs.getDouble("amountPaid") +
+                        ", Date: " + rs.getString("paymentDate") +
+                        ", Cashier: " + rs.getString("cashierName"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving payments!");
             e.printStackTrace();
         }
     }

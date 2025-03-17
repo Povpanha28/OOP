@@ -7,8 +7,8 @@ public class CashPayment extends Payment {
     private double change;       // The change to be returned to the customer
 
     // Constructor for CashPayment
-    public CashPayment(int saleID, double amountPaid, String transactionDate, String cashierName, double moneyGiven) {
-        super(saleID, amountPaid, transactionDate, "Cash"); // "Cash" is the payment method
+    public CashPayment(int saleID, double amountPaid, String cashierName, double moneyGiven) {
+        super(saleID, amountPaid, "Cash"); // "Cash" is the payment method
         this.cashierName = cashierName;
         this.moneyGiven = moneyGiven;
         calculateChange(); // Automatically calculate the change on creation

@@ -6,19 +6,17 @@ public abstract class Payment {
     private static int nextPaymentID = 1;
     private int saleID;
     private String paymentMethod;
-    private String transactionDate;
     protected double amountPaid;
 
     private final static String adminPassword = "SecurePass123";
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Payment(int saleID, double amountPaid, String transactionDate, String paymentMethod) {
+    public Payment(int saleID, double amountPaid, String paymentMethod) {
         this.paymentID = nextPaymentID;
         nextPaymentID++;
         this.saleID = saleID;
         this.paymentMethod = paymentMethod;
         this.amountPaid = amountPaid;
-        this.transactionDate = transactionDate;
     }
 
     // Getter methods (Public: Provides controlled access to private variables)
@@ -32,10 +30,6 @@ public abstract class Payment {
 
     public String getPaymentMethod() {
         return paymentMethod;
-    }
-
-    public String getTransactionDate() {
-        return transactionDate;
     }
 
     public double getAmountPaid() {
@@ -53,7 +47,6 @@ public abstract class Payment {
                 "PaymentID=" + paymentID +
                 ", SaleID=" + saleID +
                 ", PaymentMethod='" + paymentMethod + '\'' +
-                ", TransactionDate='" + transactionDate + '\'' +
                 ", AmountPaid=" + amountPaid +
                 '}';
     }
@@ -69,10 +62,6 @@ public abstract class Payment {
 
     public void setAmountPaid(double amountPaid) {
         this.amountPaid = amountPaid;
-    }
-
-    public void setTransactionDate(String transactionDate) {
-        this.transactionDate = transactionDate;
     }
 
     public void setPaymentID(int paymentID) {

@@ -2,76 +2,111 @@ package Entity.Sales;
 
 import Database.MySQLConnection;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 public class SalesMain {
+
     public static void main(String[] args) {
-        // Create an ArrayList to store Sale objects
-        List<Sale> saleList = new ArrayList<>();
-        
-        // Create Sale objects (including SalesDiscount)
-        Sale sale1 = new Sale(1, 1, 5, 99.95);
-        Sale sale2 = new SalesDiscount(2, 2, 10, 199.95, 0.1);
-        Sale sale3 = new SalesDiscount(3, 3, 2, 49.95, 0.2);
+        Scanner scanner = new Scanner(System.in);
 
-        // Add the sales to the ArrayList
-        saleList.add(sale1);
-        saleList.add(sale2);
-        saleList.add(sale3);
+        try (Connection connection = MySQLConnection.getConnection()) {
+            while (true) {
+                System.out.println("\n===== Sales Management System =====");
+                System.out.println("1. Add Sales to Database");
+                System.out.println("2. Delete Sale from Database");
+                System.out.println("3. Update Sale in Database");
+                System.out.println("4. Exit");
+                System.out.print("Enter your choice: ");
 
-        // Add sales to the database
-        addSalesToDatabase(saleList);
-
-        // Delete sale from the database
-        deleteSaleFromDatabase(2); // Example: Delete sale with sale_id 2
-    }
-
-    // Method to add sales to the database
-    public static void addSalesToDatabase(List<Sale> sales) {
-        String query = "INSERT INTO sales (sale_id, customer_id, product_id, amount_of_product, total_price, sale_date, discount_rate) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
-    
-            // Loop through each sale and insert it into the database
-            for (Sale sale : sales) {
-                pstmt.setInt(1, sale.getSaleID());
-                pstmt.setInt(2, sale.getCustomerID());
-                pstmt.setInt(3, sale.getProductID());
-                pstmt.setInt(4, sale.getAmountOfProduct());
-                pstmt.setDouble(5, sale.getTotalPrice());
-
-                // Set sale date (you can customize this based on the sale's creation time)
-                pstmt.setString(6, sale.getSaleDate() != null ? sale.getSaleDate() : "2025-03-05");
-
-                // Handle discount for SalesDiscount objects
-                if (sale instanceof SalesDiscount) {
-                    pstmt.setDouble(7, ((SalesDiscount) sale).getDiscountRate());
-                } else {
-                    pstmt.setDouble(7, 0.0); // No discount for regular Sale
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input! Please enter a number.");
+                    scanner.next();
+                    continue;
                 }
-    
-                pstmt.addBatch(); // Add to batch for batch execution
+
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        addSale(scanner, connection);
+                        break;
+
+                    case 2:
+                        deleteSale(scanner, connection);
+                        break;
+
+                    case 3:
+                        updateSale(scanner, connection);
+                        break;
+
+                    case 4:
+                        System.out.println("Exiting System...");
+                        scanner.close();
+                        return;
+
+                    default:
+                        System.out.println("Invalid Choice! Please Try Again.");
+                }
             }
-    
-            // Execute the batch of insert statements
-            pstmt.executeBatch();
-            System.out.println("Sales added to the database successfully!");
-    
         } catch (SQLException e) {
-            System.out.println("Error adding sales to the database!");
+            System.out.println("Database Connection Error!");
             e.printStackTrace();
         }
     }
 
-    // Method to delete sale from the database
-    public static void deleteSaleFromDatabase(int saleID) {
+    private static void addSale(Scanner scanner, Connection connection) {
+        System.out.println("\nEnter Sale Details:");
+        System.out.print("Customer ID: ");
+        int customerId = scanner.nextInt();
+
+        System.out.print("Product ID: ");
+        int productId = scanner.nextInt();
+
+        System.out.print("Amount of Product: ");
+        int amount = scanner.nextInt();
+
+        System.out.print("Total Price: ");
+        double price = scanner.nextDouble();
+
+        System.out.print("Is there any discount? (yes/no): ");
+        String discountChoice = scanner.next();
+        double discount = 0.0;
+
+        if (discountChoice.equalsIgnoreCase("yes")) {
+            System.out.print("Discount Percentage: ");
+            discount = scanner.nextDouble();
+        }
+
+        String query = "INSERT INTO sales (customer_id, product_id, amount_of_product, total_price, sale_date, discount_rate) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setInt(1, customerId);
+            pstmt.setInt(2, productId);
+            pstmt.setInt(3, amount);
+            pstmt.setDouble(4, price);
+            pstmt.setString(5, LocalDate.now().toString());
+            pstmt.setDouble(6, discount);
+
+            pstmt.executeUpdate();
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+
+            if (generatedKeys.next()) {
+                System.out.println("Sale added with ID: " + generatedKeys.getInt(1));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error adding sale!");
+            e.printStackTrace();
+        }
+    }
+
+    private static void deleteSale(Scanner scanner, Connection connection) {
+        System.out.print("\nEnter Sale ID to Delete: ");
+        int saleID = scanner.nextInt();
+
         String query = "DELETE FROM sales WHERE sale_id = ?";
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
-
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, saleID);
             int rowsAffected = pstmt.executeUpdate();
 
@@ -81,7 +116,92 @@ public class SalesMain {
                 System.out.println("No sale found with ID " + saleID);
             }
         } catch (SQLException e) {
-            System.out.println("Error deleting sale from the database!");
+            System.out.println("Error deleting sale!");
+            e.printStackTrace();
+        }
+    }
+
+    private static void updateSale(Scanner scanner, Connection connection) {
+        System.out.print("\nEnter Sale ID to Update: ");
+        int saleID = scanner.nextInt();
+
+        System.out.println("\nChoose what to update:");
+        System.out.println("1. Amount of Product");
+        System.out.println("2. Total Price");
+        System.out.println("3. Discount Rate");
+        System.out.println("4. Update All");
+        System.out.print("Enter your choice: ");
+
+        int updateChoice = scanner.nextInt();
+        String query = "";
+        boolean hasUpdate = false;
+
+        try {
+            switch (updateChoice) {
+                case 1:
+                    System.out.print("Enter New Amount of Product: ");
+                    int newAmount = scanner.nextInt();
+                    query = "UPDATE sales SET amount_of_product = ? WHERE sale_id = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setInt(1, newAmount);
+                        pstmt.setInt(2, saleID);
+                        hasUpdate = pstmt.executeUpdate() > 0;
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Enter New Total Price: ");
+                    double newPrice = scanner.nextDouble();
+                    query = "UPDATE sales SET total_price = ? WHERE sale_id = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setDouble(1, newPrice);
+                        pstmt.setInt(2, saleID);
+                        hasUpdate = pstmt.executeUpdate() > 0;
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Enter New Discount Percentage: ");
+                    double newDiscount = scanner.nextDouble();
+                    query = "UPDATE sales SET discount_rate = ? WHERE sale_id = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setDouble(1, newDiscount);
+                        pstmt.setInt(2, saleID);
+                        hasUpdate = pstmt.executeUpdate() > 0;
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Enter New Amount of Product: ");
+                    int updatedAmount = scanner.nextInt();
+                    System.out.print("Enter New Total Price: ");
+                    double updatedPrice = scanner.nextDouble();
+                    System.out.print("Enter New Discount Percentage: ");
+                    double updatedDiscount = scanner.nextDouble();
+
+                    query = "UPDATE sales SET amount_of_product = ?, total_price = ?, discount_rate = ?, sale_date = ? WHERE sale_id = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setInt(1, updatedAmount);
+                        pstmt.setDouble(2, updatedPrice);
+                        pstmt.setDouble(3, updatedDiscount);
+                        pstmt.setString(4, LocalDate.now().toString());
+                        pstmt.setInt(5, saleID);
+                        hasUpdate = pstmt.executeUpdate() > 0;
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid choice! No updates performed.");
+                    return;
+            }
+
+            if (hasUpdate) {
+                System.out.println("Sale with ID " + saleID + " updated successfully!");
+            } else {
+                System.out.println("No sale found with ID " + saleID);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating sale!");
             e.printStackTrace();
         }
     }
