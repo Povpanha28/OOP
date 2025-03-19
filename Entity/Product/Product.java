@@ -45,39 +45,39 @@ public abstract class Product {
     }
 
     // Secure Setters with Exception Handling
-    public void setProductName(String productName, String password) throws UnauthorizedAccessException {
+    public void setProductName(String productName, String password){
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of product name.");
+            System.out.println("Wrong!");
         }
         if (productName == null || productName.isEmpty()) {
-            throw new IllegalArgumentException("Invalid Product Name: Name cannot be empty.");
+            System.out.println("Wrong!");
         }
         this.productName = productName;
     }
 
-    public void setProductPrice(double productPrice, String password) throws UnauthorizedAccessException {
+    public void setProductPrice(double productPrice, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of product price.");
+            System.out.println("Wrong!");
         }
         if (productPrice < 0) {
-            throw new IllegalArgumentException("Invalid Product Price: Price cannot be negative.");
+            System.out.println("Wrong!");
         }
         this.productPrice = productPrice;
     }
 
-    public void setProductQty(int productQty, String password) throws UnauthorizedAccessException {
+    public void setProductQty(int productQty, String password){
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of product quantity.");
+            System.out.println("Wrong!");
         }
         if (productQty < 0) {
-            throw new IllegalArgumentException("Invalid Product Quantity: Quantity cannot be negative.");
+            System.out.println("Wrong!");
         }
         this.productQty = productQty;
     }
 
     protected void setProductDescription(String productDescription, String password) throws UnauthorizedAccessException {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of product description.");
+            System.out.println("Wrong!");
         }
         this.productDescription = productDescription;
     }
