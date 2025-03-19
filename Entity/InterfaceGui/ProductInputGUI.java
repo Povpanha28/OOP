@@ -13,6 +13,7 @@ public class ProductInputGUI {
     private JTextField nameField, priceField, qtyField, sizeField, colorField, materialBrandField;
     private JTextArea descriptionArea;
     private JComboBox<String> typeComboBox;
+    private Connection connection;  // Connection object to keep it persistent
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ProductInputGUI::new);
@@ -21,8 +22,10 @@ public class ProductInputGUI {
     public ProductInputGUI() {
         frame = new JFrame("Product Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(600, 450);
         frame.setLayout(new BorderLayout());
+
+        connection = MySQLConnection.getConnection();  // Open connection once
 
         // Creating the UI components
         JPanel formPanel = new JPanel();
@@ -120,7 +123,7 @@ public class ProductInputGUI {
             double price = Double.parseDouble(priceField.getText());
             int qty = Integer.parseInt(qtyField.getText());
             String description = descriptionArea.getText();
-            String type = (String) typeComboBox.getSelectedItem();
+            String type = (String) typeComboBox.getSelectedItem(); // Use type as category
             String size = sizeField.getText();
             String color = colorField.getText();
             String materialOrBrand = materialBrandField.getText();
@@ -129,12 +132,12 @@ public class ProductInputGUI {
             Product product = createProduct(type, name, price, qty, description, size, color, materialOrBrand);
 
             // Add the product to the database
-            addProductToDatabase(product);
+            addProductToDatabase(product, type);  // Pass type as category
 
             // Show a success message
             JOptionPane.showMessageDialog(frame, "Product has been successfully added!");
 
-            // Reset the fields after adding the product
+            // Reset the fields after adding the product but don't close the form
             resetFields();
 
         } catch (Exception e) {
@@ -156,12 +159,10 @@ public class ProductInputGUI {
         }
     }
 
-    private void addProductToDatabase(Product product) {
-        String query = "INSERT INTO product (name, price, qty, description, size, color, material_or_brand) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private void addProductToDatabase(Product product, String category) {
+        String query = "INSERT INTO product (name, price, qty, description, size, color, material_or_brand, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
-
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, product.getProductName());
             pstmt.setDouble(2, product.getProductPrice());
             pstmt.setInt(3, product.getProductQty());
@@ -175,6 +176,7 @@ public class ProductInputGUI {
             pstmt.setString(7, product instanceof Shirt ? ((Shirt) product).getMaterial()
                     : product instanceof Shoes ? ((Shoes) product).getBrand()
                     : ((Pant) product).getMaterial());
+            pstmt.setString(8, category);  // Use type as the category
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -197,5 +199,16 @@ public class ProductInputGUI {
 
         // After resetting, we also update the fields based on the default combo box selection
         updateProductSpecificFields();  // This ensures "Material" doesn't remain in the text field for "Material/Brand"
+    }
+
+    // Close connection when shutting down the application
+    public void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
