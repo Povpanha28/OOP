@@ -3,56 +3,30 @@ package Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-// import java.sql.SQLSyntaxErrorException;
-import java.sql.Statement;
 
-import java.sql.ResultSet;
 
 public class MySQLConnection {
-
     private static Connection connection = null;
     private static final String URL = "jdbc:mysql://localhost:3306/java";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
 
-    // Establish the connection
     public static Connection getConnection() {
-        if (connection == null) {
-            try {
+        try {
+            // Check if the connection is null or closed, then create a new one
+            if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
                 System.out.println("Connected to MySQL successfully!");
-            } catch (SQLException e) {
-                System.out.println("Connection failed!");
             }
+        } catch (SQLException e) {
+            System.out.println("Connection failed!");
+            e.printStackTrace();
         }
         return connection;
     }
+    
+    
 
-    // Execute a query (SELECT)
-    public static ResultSet executeQuery(String query) {
-        try {
-            Statement statement = getConnection().createStatement();
-            return statement.executeQuery(query);
-        } catch (SQLException e) {
-            System.out.println("Query execution failed!");
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    // Execute an update (INSERT, UPDATE, DELETE)
-    public static int executeUpdate(String query) {
-        try {
-            Statement statement = getConnection().createStatement();
-            return statement.executeUpdate(query);
-        } catch (SQLException e) {
-            System.out.println("Update execution failed!");
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    // Close the connection
     public static void closeConnection() {
         if (connection != null) {
             try {
@@ -64,10 +38,5 @@ public class MySQLConnection {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void main(String[] args) {
-        MySQLConnection.getConnection();
-        executeUpdate("INSERT INTO product (name,price,qty) VALUES ('John', 20,10)");
     }
 }

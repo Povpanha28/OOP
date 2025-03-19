@@ -6,27 +6,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 public class Admin extends User {
     private static final String role = "Admin";
-    private String password;
-    private String email;
+    private boolean isLoggedIn = false; // New field to track login status
+    private Connection connection;
+
 
     // Constructor
     public Admin(String username) {
         super(username);
-    }
-
-    // Getters
-    protected String getpass() {
-        return password;
-    }
-
-    protected String getPassword() {
-        return password;
-    }
-
-    protected String getEmail() {
-        return email;
     }
 
     @Override
@@ -34,58 +23,27 @@ public class Admin extends User {
         return role;
     }
 
-    // Override updateUserInDatabase to include admin-specific fields if needed
-    @Override
-    protected void updateUserInDatabase() {
-        String query = "UPDATE admin SET username = ?, password = ? WHERE userID = ?";
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, getUsername());
-            preparedStatement.setString(2, getPassword());
-            preparedStatement.setString(3, getEmail());
-            preparedStatement.setInt(4, getUserID());
-            preparedStatement.executeUpdate();
-            System.out.println("Admin updated successfully!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void removeUser(String userID) {
-        String query = "DELETE FROM user WHERE userID = ?";
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, Integer.parseInt(userID));
-            preparedStatement.executeUpdate();
-            System.out.println("Admin removed successfully!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public boolean isLoggedIn() {
+        return isLoggedIn;
     }
 
     @Override
     public void login(String inputUsername, String inputPassword) {
-        // Query to retrieve both username and password from the database
         String query = "SELECT username, password FROM admin WHERE username = ?";
-        
-        try (Connection connection = MySQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            
-            // Set the username parameter in the query
+    
+        try {
+            connection = MySQLConnection.getConnection(); // Assign connection to the field
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, inputUsername);
-            
-            // Execute the query
             ResultSet resultSet = preparedStatement.executeQuery();
-            
-            // Check if the username exists in the database
+    
             if (resultSet.next()) {
-                // Retrieve the stored username and password from the database
                 String storedUsername = resultSet.getString("username");
                 String storedPassword = resultSet.getString("password");
-                
-                // Compare the input username and password with the stored values
+    
                 if (storedUsername.equals(inputUsername) && storedPassword.equals(inputPassword)) {
                     System.out.println("Admin login successful!");
+                    isLoggedIn = true;
                 } else {
                     System.out.println("Invalid username or password.");
                 }
@@ -96,9 +54,42 @@ public class Admin extends User {
             e.printStackTrace();
         }
     }
+    
+
+    public void addEmployee(String username, String role, String password) {
+        if (!isLoggedIn) {
+            System.out.println("Access Denied: Admin must log in first!");
+            return;
+        }
+    
+        if (connection == null) { // Ensure the connection is open
+            System.out.println("Error: Database connection is closed.");
+            return;
+        }
+    
+        String query = "INSERT INTO employee (username, role, password) VALUES (?, ?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, role);
+            preparedStatement.setString(3, password);
+    
+            int rowsInserted = preparedStatement.executeUpdate();
+    
+            if (rowsInserted > 0) {
+                System.out.println("Employee added successfully!");
+            } else {
+                System.out.println("Failed to add employee.");
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
 
     public static void main(String[] args) {
         Admin admin = new Admin("Youdy");
         admin.login("Youdy", "12345");
+        admin.addEmployee("thyrak", "Manager", "1234"); // Will only work if login is successful
     }
 }
