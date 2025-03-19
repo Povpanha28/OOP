@@ -57,8 +57,6 @@ public class SalesMain {
 
     private static void addSale(Scanner scanner, Connection connection) {
         System.out.println("\nEnter Sale Details:");
-        System.out.print("Customer ID: ");
-        int customerId = scanner.nextInt();
 
         System.out.print("Product ID: ");
         int productId = scanner.nextInt();
@@ -78,15 +76,14 @@ public class SalesMain {
             discount = scanner.nextDouble();
         }
 
-        String query = "INSERT INTO sales (customer_id, product_id, amount_of_product, total_price, sale_date, discount_rate) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO sales (product_id, amount_of_product, total_price, sale_date, discount_rate) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setInt(1, customerId);
-            pstmt.setInt(2, productId);
-            pstmt.setInt(3, amount);
-            pstmt.setDouble(4, price);
-            pstmt.setString(5, LocalDate.now().toString());
-            pstmt.setDouble(6, discount);
+            pstmt.setInt(1, productId);
+            pstmt.setInt(2, amount);
+            pstmt.setDouble(3, price);
+            pstmt.setString(4, LocalDate.now().toString());
+            pstmt.setDouble(5, discount);
 
             pstmt.executeUpdate();
             ResultSet generatedKeys = pstmt.getGeneratedKeys();

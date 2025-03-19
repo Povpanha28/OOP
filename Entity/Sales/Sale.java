@@ -3,7 +3,6 @@ package Entity.Sales;
 public class Sale {
     private static int counter = 0;
     private int saleID;
-    private int customerID;
     private int productID;
     private int amountOfProduct;
     protected double totalPrice;
@@ -11,9 +10,9 @@ public class Sale {
 
     private static final String ADMIN_PASSWORD = "admin123";
 
-    public Sale(int customerID, int productID, int amountOfProduct, double totalPrice) {
-        if (customerID <= 0 || productID <= 0) {
-            System.out.println("Customer ID and Product ID must be greater than zero.");
+    public Sale(int productID, int amountOfProduct, double totalPrice) {
+        if (productID <= 0) {
+            System.out.println("Product ID must be greater than zero.");
             return; // Stop object creation
         }
         if (amountOfProduct <= 0) {
@@ -26,7 +25,6 @@ public class Sale {
         }
 
         this.saleID = ++counter;
-        this.customerID = customerID;
         this.productID = productID;
         this.amountOfProduct = amountOfProduct;
         this.totalPrice = totalPrice;
@@ -35,10 +33,6 @@ public class Sale {
     // Getters
     public int getSaleID() {
         return saleID;
-    }
-
-    public int getCustomerID() {
-        return customerID;
     }
 
     public int getProductID() {
@@ -90,14 +84,6 @@ public class Sale {
         this.saleDate = saleDate;
     }
 
-    public void setCustomerID(int customerID, String password) {
-        if (!isAuthorized(password)) {
-            System.out.println("Unauthorized access: Only admins can change customer ID.");
-            return;
-        }
-        this.customerID = customerID;
-    }
-
     public void setProductID(int productID, String password) {
         if (!isAuthorized(password)) {
             System.out.println("Unauthorized access: Only admins can change product ID.");
@@ -113,7 +99,7 @@ public class Sale {
 
     @Override
     public String toString() {
-        return "Sale [saleID=" + saleID + ", customerID=" + customerID + ", productID=" + productID
+        return "Sale [saleID=" + saleID + ", productID=" + productID
                 + ", amountOfProduct=" + amountOfProduct + ", totalPrice=" + totalPrice + ", saleDate=" + saleDate + "]";
     }
 
