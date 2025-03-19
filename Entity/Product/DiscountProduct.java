@@ -7,7 +7,7 @@ public class DiscountProduct extends Product {
     public DiscountProduct(String productName, double productPrice, int productQty, 
                            String productDescription, String addedDate, String supplierID, 
                            double discountPercentage, String password) throws UnauthorizedAccessException {
-        super(productName, productPrice, productQty, addedDate, supplierID);
+        super(productName, productPrice, productQty);
         this.discountPercentage = discountPercentage;
     }
 
