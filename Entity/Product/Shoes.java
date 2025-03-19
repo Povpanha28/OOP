@@ -8,10 +8,10 @@ public class Shoes extends Product {
     private String brand;
 
     // Constructor
-    public Shoes(String productName, double productPrice, int productQty, 
-                 String productDescription, String addedDate, String supplierID, 
-                 String size, String color, String brand) {
-        super(productName, productPrice, productQty, addedDate, supplierID);
+    public Shoes(String productName, double productPrice, int productQty,
+            String productDescription,
+            String size, String color, String brand) {
+        super(productName, productPrice, productQty);
         this.size = size;
         this.color = color;
         this.brand = brand;
@@ -70,25 +70,24 @@ public class Shoes extends Product {
     // Overriding equals() to compare objects based on field values
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
         Shoes shoes = (Shoes) obj;
         return Double.compare(shoes.getProductPrice(), getProductPrice()) == 0 &&
-               getProductQty() == shoes.getProductQty() &&
-               Objects.equals(getProductName(), shoes.getProductName()) &&
-               Objects.equals(getAddedDate(), shoes.getAddedDate()) &&
-               Objects.equals(getSupplierID(), shoes.getSupplierID()) &&
-               Objects.equals(size, shoes.size) &&
-               Objects.equals(color, shoes.color) &&
-               Objects.equals(brand, shoes.brand);
+                getProductQty() == shoes.getProductQty() &&
+                Objects.equals(getProductName(), shoes.getProductName()) &&
+                Objects.equals(size, shoes.size) &&
+                Objects.equals(color, shoes.color) &&
+                Objects.equals(brand, shoes.brand);
     }
-
 
     @Override
     public String toString() {
         return super.toString() + "\nShoes Details: " +
-               "\n  - Size: " + size + 
-               "\n  - Color: " + color + 
-               "\n  - Brand: " + brand;
+                "\n  - Size: " + size +
+                "\n  - Color: " + color +
+                "\n  - Brand: " + brand;
     }
 }

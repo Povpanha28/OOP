@@ -7,9 +7,9 @@ public class Pant extends Product {
 
     // Constructor
     public Pant(String productName, double productPrice, int productQty,
-                String productDescription, String addedDate, String supplierID,
+                String productDescription,
                 String size, String color, String material) {
-        super(productName, productPrice, productQty, addedDate, supplierID);
+        super(productName, productPrice, productQty);
         this.size = size;
         this.color = color;
         this.material = material;

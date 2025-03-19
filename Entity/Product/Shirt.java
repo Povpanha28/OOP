@@ -8,10 +8,10 @@ public class Shirt extends Product {
     private String material;
 
     // Constructor
-    public Shirt(String productName, double productPrice, int productQty, 
-                 String productDescription, String addedDate, String supplierID, 
-                 String size, String color, String material) {
-        super(productName, productPrice, productQty, addedDate, supplierID);
+    public Shirt(String productName, double productPrice, int productQty,
+            String productDescription,
+            String size, String color, String material) {
+        super(productName, productPrice, productQty);
         this.size = size;
         this.color = color;
         this.material = material;
@@ -70,25 +70,24 @@ public class Shirt extends Product {
     // Overriding equals() to compare objects based on field values
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
         Shirt shirt = (Shirt) obj;
         return Double.compare(shirt.getProductPrice(), getProductPrice()) == 0 &&
-               getProductQty() == shirt.getProductQty() &&
-               Objects.equals(getProductName(), shirt.getProductName()) &&
-               Objects.equals(getAddedDate(), shirt.getAddedDate()) &&
-               Objects.equals(getSupplierID(), shirt.getSupplierID()) &&
-               Objects.equals(size, shirt.size) &&
-               Objects.equals(color, shirt.color) &&
-               Objects.equals(material, shirt.material);
+                getProductQty() == shirt.getProductQty() &&
+                Objects.equals(getProductName(), shirt.getProductName()) &&
+                Objects.equals(size, shirt.size) &&
+                Objects.equals(color, shirt.color) &&
+                Objects.equals(material, shirt.material);
     }
 
     @Override
     public String toString() {
         return super.toString() + "\nShirt Details:" +
-               "\n  - Size: " + size + 
-               "\n  - Color: " + color + 
-               "\n  - Material: " + material;
+                "\n  - Size: " + size +
+                "\n  - Color: " + color +
+                "\n  - Material: " + material;
     }
 }
-
