@@ -1,10 +1,11 @@
 package Entity.InterfaceGui;
 
+import Database.MySQLConnection;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 import javax.swing.*;
 
 public class ShopManagementGUI {
@@ -35,9 +36,9 @@ public class ShopManagementGUI {
         frame.add(topPanel, BorderLayout.NORTH);
 
         JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new GridLayout(5, 1, 5, 5));
+        leftPanel.setLayout(new GridLayout(4, 1, 5, 5)); // Adjusted grid layout to 4 rows
         leftPanel.setPreferredSize(new Dimension(150, frame.getHeight()));
-        String[] categories = {"All Items", "Shirt", "Pant", "Shoes", "Latest"};
+        String[] categories = {"All Items", "Shirt", "Pant", "Shoes"}; // Removed "Latest" category
 
         for (String category : categories) {
             JButton button = new JButton(category);
@@ -51,42 +52,9 @@ public class ShopManagementGUI {
         frame.add(rightPanel, BorderLayout.EAST);
 
         centerPanel = new JPanel(new GridLayout(0, 2, 10, 10));
-        String[][] productData = {
-            {"Shirt", "Product 1", "20.99"},
-            {"Pant", "Product 2", "30.50"},
-            {"Shoes", "Product 3", "50.00"},
-            {"Shirt", "Product 4", "19.99"},
-            {"Latest", "Product 5", "25.75"},
-            {"Shoes", "Product 6", "40.00"}
-        };
 
-        for (String[] data : productData) {
-            String category = data[0];
-            String productName = data[1];
-            double price = Double.parseDouble(data[2]);
-
-            JPanel productPanel = new JPanel(new BorderLayout());
-            productPanel.setBackground(Color.LIGHT_GRAY);
-            productPanel.setPreferredSize(new Dimension(150, 100));
-
-            JLabel productLabel = new JLabel(productName + " ($" + price + ")", SwingConstants.CENTER);
-
-            JButton addButton = new JButton("+");
-            addButton.setFont(new Font("Arial", Font.BOLD, 12));
-            addButton.setForeground(Color.WHITE);
-            addButton.setBackground(Color.GREEN);
-            addButton.setPreferredSize(new Dimension(30, 30));
-            addButton.addActionListener(e -> addToCart(productName, price));
-
-            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            buttonPanel.add(addButton);
-
-            productPanel.add(productLabel, BorderLayout.CENTER);
-            productPanel.add(buttonPanel, BorderLayout.NORTH);
-
-            productPanel.putClientProperty("category", category);
-            centerPanel.add(productPanel);
-        }
+        // Initially load all products
+        loadProductsFromDatabase("All Items");
 
         frame.add(centerPanel, BorderLayout.CENTER);
 
@@ -103,16 +71,75 @@ public class ShopManagementGUI {
         frame.setVisible(true);
     }
 
+    private static void loadProductsFromDatabase(String category) {
+        // Clear the center panel before adding new products
+        centerPanel.removeAll();
+
+        // Query to fetch product data based on category
+        String query = category.equals("All Items") ? "SELECT * FROM product" : "SELECT * FROM product WHERE category = ?";
+        try (PreparedStatement pstmt = MySQLConnection.getConnection().prepareStatement(query)) {
+            if (!category.equals("All Items")) {
+                pstmt.setString(1, category);
+            }
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while (resultSet.next()) {
+                String productName = resultSet.getString("name");
+                double price = resultSet.getDouble("price");
+                String description = resultSet.getString("description");
+                String size = resultSet.getString("size");
+                String color = resultSet.getString("color");
+                String materialOrBrand = resultSet.getString("material_or_brand");
+                int qty = resultSet.getInt("qty");
+
+                JPanel productPanel = new JPanel(new BorderLayout());
+                productPanel.setBackground(Color.LIGHT_GRAY);
+                productPanel.setPreferredSize(new Dimension(150, 100));
+
+                JLabel productLabel = new JLabel(productName + " ($" + price + ")", SwingConstants.CENTER);
+
+                JButton addButton = new JButton("+");
+                addButton.setFont(new Font("Arial", Font.BOLD, 12));
+                addButton.setForeground(Color.WHITE);
+                addButton.setBackground(Color.GREEN);
+                addButton.setPreferredSize(new Dimension(30, 30));
+                addButton.addActionListener(e -> addToCart(productName, price));
+
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                buttonPanel.add(addButton);
+
+                productPanel.add(productLabel, BorderLayout.CENTER);
+                productPanel.add(buttonPanel, BorderLayout.NORTH);
+
+                // Store additional product details in the panel
+                productPanel.putClientProperty("description", description);
+                productPanel.putClientProperty("size", size);
+                productPanel.putClientProperty("color", color);
+                productPanel.putClientProperty("material_or_brand", materialOrBrand);
+                productPanel.putClientProperty("qty", qty);
+
+                centerPanel.add(productPanel);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Revalidate and repaint the center panel to reflect changes
+        centerPanel.revalidate();
+        centerPanel.repaint();
+    }
+
     static class CategoryButtonListener implements ActionListener {
         private String category;
-    
+
         public CategoryButtonListener(String category) {
             this.category = category;
         }
-    
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(frame, "Selected Category: " + category);
+            loadProductsFromDatabase(category); // Load products of selected category
         }
     }
 
