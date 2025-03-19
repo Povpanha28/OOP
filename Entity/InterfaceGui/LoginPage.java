@@ -67,7 +67,8 @@ public class LoginPage extends JFrame implements ActionListener {
             new MainPage("admin"); // Open admin main page
             dispose();
         } else {
-            if (validateCredentials(username, password)) {
+            String role = getUserRole(username, password);
+            if (role != null) {
                 new MainPage(username); // Open user main page
                 dispose();
             } else {
@@ -76,19 +77,21 @@ public class LoginPage extends JFrame implements ActionListener {
         }
     }
 
-    private boolean validateCredentials(String username, String password) {
-        String query = "SELECT * FROM employees WHERE username = ? AND password = ?";
+    private String getUserRole(String username, String password) {
+        String query = "SELECT employee_role FROM Employee WHERE username = ? AND password = ?";
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            return rs.next();
+            if (rs.next()) {
+                return rs.getString("employee_role");
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Database Error", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
         }
+        return null;
     }
 
     public static void main(String[] args) {

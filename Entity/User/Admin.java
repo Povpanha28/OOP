@@ -2,7 +2,7 @@ package Entity.User;
 
 import java.util.HashMap;
 
-public class Admin extends User{
+public class Admin extends User {
     private int adminID;
     private static int totalAdmins = 1;
     private static final String role = "Admin";
@@ -11,8 +11,8 @@ public class Admin extends User{
     private static HashMap<Integer, Admin> adminDatabase = new HashMap<>();
 
     // Constructor
-    public Admin(String username, String password, String email) {
-        super(username, password, email);
+    public Admin(String username, String password) {
+        super(username, password);
         this.adminID = totalAdmins++;
     }
 
