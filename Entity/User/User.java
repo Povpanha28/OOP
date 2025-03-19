@@ -8,16 +8,14 @@ public abstract class User implements Autentication {
     private int userID;
     private String username;
     protected String password;
-    protected String email;
 
     private static HashMap<Integer, User> userDatabase = new HashMap<>();
 
     // Constructor
-    public User(String username, String password, String email) {
+    public User(String username, String password) {
         this.userID = counter++;
         this.username = username;
         this.password = password;
-        this.email = email;
 
     }
 
@@ -33,22 +31,20 @@ public abstract class User implements Autentication {
         return username;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
-        
 
     public String getEmail() {
         return email;
     }
-    
 
     public static HashMap<Integer, User> getUserDatabase() {
         return userDatabase;
     }
 
     public static User getUserByID(int id) {
-        if(!userDatabase.containsKey(id)){
+        if (!userDatabase.containsKey(id)) {
             return null;
         }
         return userDatabase.get(id);
@@ -67,8 +63,7 @@ public abstract class User implements Autentication {
     public void setUsername(String username, String email, String password) {
         if (email.equals(this.email) && password.equals(this.password)) {
             this.username = username;
-        }
-        else {
+        } else {
             System.out.println("Unauthorized access.");
         }
     }
@@ -76,8 +71,7 @@ public abstract class User implements Autentication {
     public void setPassword(String password, String email, String oldPassword) {
         if (email.equals(this.email) && oldPassword.equals(this.password)) {
             this.password = password;
-        }
-        else {
+        } else {
             System.out.println("Unauthorized access.");
         }
     }
@@ -85,8 +79,7 @@ public abstract class User implements Autentication {
     public void setEmail(String email, String password) {
         if (email.equals(this.email) && password.equals(this.password)) {
             this.email = email;
-        }
-        else {
+        } else {
             System.out.println("Unauthorized access.");
         }
     }
@@ -97,6 +90,7 @@ public abstract class User implements Autentication {
     }
 
     public abstract void register();
+
     public abstract void login();
 
 }

@@ -2,31 +2,29 @@ package Entity.User;
 
 import java.util.HashMap;
 
-public class Employee extends User{
+public class Employee extends User {
     // Instance variables (Private for encapsulation)
     private String employeeName;
     private String employeeRole;
     private double workHours;
     private double employeeSalary;
-    private String paymentMethod;
     private String contact;
 
     // Static variables (Shared across all instances)
     private static HashMap<Integer, Employee> employeeDatabase = new HashMap<>();
 
     // Constructor (Public: Allows object creation from anywhere)
-    public Employee(String username, String password, String email, String employeeName,
+    public Employee(String username, String password, String employeeName,
             String employeeRole, double workHours, double employeeSalary, String paymentMethod, String contact) {
-        super(username, password, email);
+        super(username, password);
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
         this.workHours = workHours;
         this.employeeSalary = employeeSalary;
-        this.paymentMethod = paymentMethod;
         this.contact = contact;
     }
 
-    public String getRole(){
+    public String getRole() {
         return "Employee";
     }
 
@@ -65,10 +63,6 @@ public class Employee extends User{
 
     public double getEmployeeSalary() {
         return employeeSalary;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
     }
 
     public String getContact() {
@@ -116,14 +110,6 @@ public class Employee extends User{
         }
     }
 
-    public void setPaymentMethod(String paymentMethod, String password) {
-        if (employeeSalary >= 0) {
-            this.paymentMethod = paymentMethod;
-        } else {
-            System.out.println("Invalid salary. It cannot be negative.");
-        }
-    }
-
     public void setContact(String contact, String password) {
         if (password.equals(this.password)) {
             this.contact = contact;
@@ -135,12 +121,12 @@ public class Employee extends User{
     @Override
     public String toString() {
         return "Employee [employeeName=" + employeeName + ", employeeRole=" + employeeRole + ", workHours=" + workHours
-                + ", employeeSalary=" + employeeSalary + ", paymentMethod=" + paymentMethod + ", contact=" + contact
+                + ", employeeSalary=" + employeeSalary + ", contact=" + contact
                 + "]";
     }
 
     @Override
-    public void login(){
+    public void login() {
         System.out.println("Attempting to log in...");
         String username = getUsername();
         String password = getPassword();
@@ -159,15 +145,15 @@ public class Employee extends User{
     @Override
     public void register() {
         System.out.println("Registering a new employee...");
-        
+
         if (employeeDatabase.containsKey(this.getUserID())) {
             System.out.println("Employee already registered.");
             return;
         }
-    
+
         employeeDatabase.put(this.getUserID(), this);
         User.getUserDatabase().put(this.getUserID(), this); // Now safe to add
         System.out.println("Employee registered successfully! User ID: " + this.getUserID());
     }
-    
+
 }
