@@ -19,7 +19,6 @@ public class ShopManagementGUI {
         SwingUtilities.invokeLater(() -> new ShopManagementGUI().createAndShowGUI());
     }
 
-
     public void createAndShowGUI() {
         frame = new JFrame("Shop Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-public class ProductDeleteGUI {
+public class ProductDeleteGUI extends JFrame {
 
     private JFrame frame;
     private JComboBox<String> productListComboBox;

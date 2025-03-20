@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
 
-public class ProductEditGUI {
+public class ProductEditGUI extends JFrame{
 
     private JFrame frame;
     private JTextField nameField, priceField, qtyField, sizeField, colorField, materialBrandField;
