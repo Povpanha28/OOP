@@ -1,0 +1,9 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\User\\Downloads\\mysql-connector-java-8.0.25.jar"
+    ],
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
+}
