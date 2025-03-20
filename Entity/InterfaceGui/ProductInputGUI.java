@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.sql.*;
 import javax.swing.*;
 
-public class ProductInputGUI {
+public class ProductInputGUI extends JFrame{
 
     private JFrame frame;
     private JTextField nameField, priceField, qtyField, sizeField, colorField, materialBrandField;

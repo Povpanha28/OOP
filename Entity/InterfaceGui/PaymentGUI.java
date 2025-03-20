@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.Map;
 import javax.swing.*;
 
-public class PaymentGUI {
+public class PaymentGUI extends JFrame {
 
     private JFrame frame;
     private JPanel panel;

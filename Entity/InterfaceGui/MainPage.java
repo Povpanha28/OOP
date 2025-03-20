@@ -28,8 +28,8 @@ public class MainPage extends JFrame {
         manageProductButton = new JButton("Manage Product");
         manageProductButton.setFont(new Font("Arial", Font.PLAIN, 14));
         manageProductButton.addActionListener(e -> {
-            
-            dispose();
+            new ProductMain();
+            // dispose();
         });
 
         manageEmployeeButton = new JButton("Manage Employee");
@@ -37,7 +37,7 @@ public class MainPage extends JFrame {
         manageEmployeeButton.setEnabled(userRole.equals("admin")); // Enable only for admin
         manageEmployeeButton.addActionListener(e -> {
             new ManageEmployeeGUI(); // Open Manage Employee GUI
-            dispose();
+            // dispose();
         });
 
         manageMembershipButton = new JButton("Manage Membership");
@@ -48,7 +48,7 @@ public class MainPage extends JFrame {
         addCartButton.setFont(new Font("Arial", Font.PLAIN, 14));
         addCartButton.addActionListener(e -> {
             new ShopManagementGUI().createAndShowGUI(); // Open Manage Employee GUI
-            dispose();
+            // dispose();
         });
         centerPanel.add(manageProductButton);
         centerPanel.add(manageEmployeeButton);
