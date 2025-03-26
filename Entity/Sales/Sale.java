@@ -1,55 +1,38 @@
 package Entity.Sales;
 
-import java.util.HashMap;
-import java.util.Collection;
-
 public class Sale {
     private static int counter = 0;
-    private final int saleID;
-    private int customerID;
+    private int saleID;
     private int productID;
     private int amountOfProduct;
-    private int totalPrice;
+    protected double totalPrice;
     private String saleDate;
-
-    // HashMap to store all sales by saleID for fast lookup
-    private static HashMap<Integer, Sale> salesMap = new HashMap<>();
 
     private static final String ADMIN_PASSWORD = "admin123";
 
-    public Sale(int customerID, int productID, int amountOfProduct) {
-        if (customerID <= 0 || productID <= 0) {
-            throw new IllegalArgumentException("Customer ID and Product ID must be valid positive numbers.");
+    public Sale(int productID, int amountOfProduct, double totalPrice) {
+        if (productID <= 0) {
+            System.out.println("Product ID must be greater than zero.");
+            return; // Stop object creation
         }
         if (amountOfProduct <= 0) {
-            throw new IllegalArgumentException("Amount of product must be greater than zero.");
+            System.out.println("Amount of product must be greater than zero.");
+            return;
         }
+        if (amountOfProduct > 100) {
+            System.out.println("Amount of product cannot exceed 100.");
+            return;
+        }
+
         this.saleID = ++counter;
-        this.customerID = customerID;
         this.productID = productID;
         this.amountOfProduct = amountOfProduct;
-
-        // Add the new sale to the HashMap
-        salesMap.put(this.saleID, this);
-    }
-
-    // Static method to retrieve a sale by ID
-    public static Sale getSaleByID(int saleID) {
-        return salesMap.get(saleID);
-    }
-
-    // Static method to get all sales
-    public static Collection<Sale> getAllSales() {
-        return salesMap.values();
+        this.totalPrice = totalPrice;
     }
 
     // Getters
     public int getSaleID() {
         return saleID;
-    }
-
-    public int getCustomerID() {
-        return customerID;
     }
 
     public int getProductID() {
@@ -60,7 +43,7 @@ public class Sale {
         return amountOfProduct;
     }
 
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
@@ -68,45 +51,63 @@ public class Sale {
         return saleDate;
     }
 
-    // Secure Setters - Only Admins Can Modify Data
+    // Secure Setters
     public void setAmountOfProduct(int amount, String password) {
         if (!isAuthorized(password)) {
-            throw new SecurityException("Unauthorized access: Only admins can change amount of product.");
+            System.out.println("Unauthorized access: Only admins can change amount of product.");
+            return;
         }
         if (amount <= 0) {
-            throw new IllegalArgumentException("Amount of product must be greater than zero.");
+            System.out.println("Amount of product must be greater than zero.");
+            return;
         }
         this.amountOfProduct = amount;
     }
 
-    public void setTotalPrice(int price, String password) {
+    public void setTotalPrice(double price, String password) {
         if (!isAuthorized(password)) {
-            throw new SecurityException("Unauthorized access: Only admins can change total price.");
+            System.out.println("Unauthorized access: Only admins can change total price.");
+            return;
         }
         if (price < 0) {
-            throw new IllegalArgumentException("Total price cannot be negative.");
+            System.out.println("Total price cannot be negative.");
+            return;
         }
         this.totalPrice = price;
     }
 
     public void setSaleDate(String saleDate, String password) {
         if (!isAuthorized(password)) {
-            throw new SecurityException("Unauthorized access: Only admins can change sale date.");
+            System.out.println("Unauthorized access: Only admins can change sale date.");
+            return;
         }
         this.saleDate = saleDate;
     }
 
-    // Helper method to verify authorization
+    public void setProductID(int productID, String password) {
+        if (!isAuthorized(password)) {
+            System.out.println("Unauthorized access: Only admins can change product ID.");
+            return;
+        }
+        this.productID = productID;
+    }
+
+    // Authorization Helper
     private boolean isAuthorized(String password) {
         return ADMIN_PASSWORD.equals(password);
     }
 
-
     @Override
     public String toString() {
-        return "Sale [saleID=" + saleID + ", customerID=" + customerID + ", productID=" + productID
-                + ", amountOfProduct=" + amountOfProduct + ", totalPrice=" + totalPrice + ", saleDate=" + saleDate
-                + "]";
+        return "Sale [saleID=" + saleID + ", productID=" + productID
+                + ", amountOfProduct=" + amountOfProduct + ", totalPrice=" + totalPrice + ", saleDate=" + saleDate + "]";
     }
-    
+
+    public void processSale() {
+        System.out.println("Processing sale... Total Price: " + calculateTotalPrice());
+    }
+
+    public double calculateTotalPrice() {
+        return totalPrice; // Default implementation
+    }
 }
