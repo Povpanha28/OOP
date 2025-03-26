@@ -109,12 +109,20 @@ public class ShopManagementGUI {
 
                 JLabel productLabel = new JLabel(productName + " ($" + price + ")", SwingConstants.CENTER);
 
+                // Check if product is out of stock
                 JButton addButton = new JButton("+");
                 addButton.setFont(new Font("Arial", Font.BOLD, 12));
                 addButton.setForeground(Color.WHITE);
                 addButton.setBackground(Color.GREEN);
                 addButton.setPreferredSize(new Dimension(30, 30));
-                addButton.addActionListener(e -> addToCart(productName, price));
+
+                if (qty <= 0) {
+                    productLabel.setText(productName + " (Out of Stock)");  // Display Out of Stock message
+                    addButton.setEnabled(false);  // Disable "Add to Cart" button
+                    addButton.setBackground(Color.GRAY);  // Set disabled button color
+                } else {
+                    addButton.addActionListener(e -> addToCart(productName, price));
+                }
 
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                 buttonPanel.add(addButton);
@@ -142,6 +150,7 @@ public class ShopManagementGUI {
     }
 
     static class CategoryButtonListener implements ActionListener {
+
         private String category;
 
         public CategoryButtonListener(String category) {
@@ -186,6 +195,7 @@ public class ShopManagementGUI {
     }
 
     static class CartItem {
+
         private String name;
         private double price;
         private int quantity;
@@ -196,10 +206,24 @@ public class ShopManagementGUI {
             this.quantity = quantity;
         }
 
-        public String getName() { return name; }
-        public double getPrice() { return price; }
-        public int getQuantity() { return quantity; }
-        public void setQuantity(int quantity) { this.quantity = quantity; }
-        public double getTotalPrice() { return price * quantity; }
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
+
+        public double getTotalPrice() {
+            return price * quantity;
+        }
     }
 }

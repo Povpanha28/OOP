@@ -173,29 +173,53 @@ public class ProductInputGUI {
     }
 
     private void addProductToDatabase(Product product, String category) {
-        String query = "INSERT INTO product (name, price, qty, description, size, color, material_or_brand, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setString(1, product.getProductName());
-            pstmt.setDouble(2, product.getProductPrice());
-            pstmt.setInt(3, product.getProductQty());
-            pstmt.setString(4, product.getProductDescription());
-            pstmt.setString(5, product instanceof Shirt ? ((Shirt) product).getSize()
-                    : product instanceof Shoes ? ((Shoes) product).getSize()
-                    : ((Pant) product).getSize());
-            pstmt.setString(6, product instanceof Shirt ? ((Shirt) product).getColor()
-                    : product instanceof Shoes ? ((Shoes) product).getColor()
-                    : ((Pant) product).getColor());
-            pstmt.setString(7, product instanceof Shirt ? ((Shirt) product).getMaterial()
-                    : product instanceof Shoes ? ((Shoes) product).getBrand()
-                    : ((Pant) product).getMaterial());
-            pstmt.setString(8, category);
-
-            pstmt.executeUpdate();
+        // Check if the product already exists in the database
+        String checkQuery = "SELECT qty FROM product WHERE name = ?";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
+            checkStmt.setString(1, product.getProductName());
+            ResultSet rs = checkStmt.executeQuery();
+    
+            if (rs.next()) {
+                // Product exists, update the quantity
+                int existingQty = rs.getInt("qty");
+                int newQty = existingQty + product.getProductQty();
+    
+                String updateQuery = "UPDATE product SET qty = ? WHERE name = ?";
+                try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+                    updateStmt.setInt(1, newQty);
+                    updateStmt.setString(2, product.getProductName());
+                    updateStmt.executeUpdate();
+                    JOptionPane.showMessageDialog(frame, "Product quantity updated!");
+                }
+    
+            } else {
+                // Product does not exist, insert a new product
+                String insertQuery = "INSERT INTO product (name, price, qty, description, size, color, material_or_brand, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+                    pstmt.setString(1, product.getProductName());
+                    pstmt.setDouble(2, product.getProductPrice());
+                    pstmt.setInt(3, product.getProductQty());
+                    pstmt.setString(4, product.getProductDescription());
+                    pstmt.setString(5, product instanceof Shirt ? ((Shirt) product).getSize()
+                            : product instanceof Shoes ? ((Shoes) product).getSize()
+                            : ((Pant) product).getSize());
+                    pstmt.setString(6, product instanceof Shirt ? ((Shirt) product).getColor()
+                            : product instanceof Shoes ? ((Shoes) product).getColor()
+                            : ((Pant) product).getColor());
+                    pstmt.setString(7, product instanceof Shirt ? ((Shirt) product).getMaterial()
+                            : product instanceof Shoes ? ((Shoes) product).getBrand()
+                            : ((Pant) product).getMaterial());
+                    pstmt.setString(8, category);
+    
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(frame, "Product has been successfully added!");
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 
     private void resetFields() {
         nameField.setText("");
