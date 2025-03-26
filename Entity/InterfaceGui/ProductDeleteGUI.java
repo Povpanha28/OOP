@@ -80,6 +80,7 @@ public class ProductDeleteGUI {
     private void handleBackButton(ActionEvent event) {
         // Close the current frame
         frame.dispose();
+        new ProductMain();
 
         // You can add the logic to navigate to the previous screen
         // For example, you can open a previous screen (like the main menu or product list) here.

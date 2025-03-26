@@ -34,9 +34,16 @@ public class MembershipGui {
         createForm(formPanel, gbc);
 
         JPanel buttonPanel = new JPanel();
+
+        // Add Membership button
         JButton addButton = new JButton("Add Membership");
         addButton.addActionListener(this::handleAddMembership);
         buttonPanel.add(addButton);
+
+        // Back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(this::handleBackButton);
+        buttonPanel.add(backButton);
 
         frame.add(formPanel, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
@@ -108,5 +115,11 @@ public class MembershipGui {
             e.printStackTrace();
         }
     }
-}
 
+    // Handle back button action
+    private void handleBackButton(ActionEvent event) {
+        // Close the current window
+        frame.dispose();
+        new MainPage("admin");
+    }
+}

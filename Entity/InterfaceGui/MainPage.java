@@ -46,7 +46,10 @@ public class MainPage {
         // Button to manage memberships
         manageMembershipButton = new JButton("Manage Membership");
         manageMembershipButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        manageMembershipButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Managing Memberships..."));
+        manageMembershipButton.addActionListener(e -> {
+            frame.dispose();
+            new MembershipGui();
+        });
 
         // Button to make a sale
         addCartButton = new JButton("Make Sale");

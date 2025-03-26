@@ -67,8 +67,6 @@ public class ShopManagementGUI {
         checkoutButton.addActionListener(e -> openPaymentGUI());
         checkoutButton.setVisible(true);
 
-        rightPanel.add(checkoutButton);
-
         // Back Button to return to previous page
         backButton = new JButton("Back");
         backButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -77,7 +75,9 @@ public class ShopManagementGUI {
         backButton.setPreferredSize(new Dimension(180, 40));
         backButton.addActionListener(e -> goBack());
 
+        // Add the back button and checkout button to the right panel initially
         rightPanel.add(backButton);
+        rightPanel.add(checkoutButton);
 
         frame.setVisible(true);
     }
@@ -174,6 +174,7 @@ public class ShopManagementGUI {
                 rightPanel.add(itemLabel);
             }
         }
+        rightPanel.add(backButton, BorderLayout.NORTH);  // Ensure the back button appears
         rightPanel.add(checkoutButton, BorderLayout.SOUTH);
         rightPanel.revalidate();
         rightPanel.repaint();
