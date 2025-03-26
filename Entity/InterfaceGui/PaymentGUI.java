@@ -1,8 +1,9 @@
 package Entity.InterfaceGui;
 
+import Database.MySQLConnection;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.sql.*;
 import java.util.Map;
 import javax.swing.*;
 
@@ -14,10 +15,13 @@ public class PaymentGUI extends JFrame {
     private JTextField membershipField; // To input membership code
     private JLabel totalLabel; // To update the total price dynamically
     private double totalPrice; // Total price of the cart, now defined as a class member
+    private Connection connection;
 
+    // Constructor to initialize the cart and create the GUI
     public PaymentGUI(Map<String, ShopManagementGUI.CartItem> cart) {
         this.cart = cart;
         this.totalPrice = 0; // Initialize total price to 0
+        connection = MySQLConnection.getConnection(); // Get the database connection
         createAndShowGUI();
     }
 
@@ -64,15 +68,20 @@ public class PaymentGUI extends JFrame {
                 String membershipCode = membershipField.getText();
                 double finalTotalPrice = totalPrice;
 
+                // Check if membership code is valid
+                boolean isValidMembership = checkMembershipCode(membershipCode);
+
                 // Apply discount if valid membership code
-                if (membershipCode.equals("MEMBER123")) {
+                if (isValidMembership) {
                     finalTotalPrice = totalPrice * 0.9; // 10% discount
                     JOptionPane.showMessageDialog(frame, "Valid membership! 10% discount applied.", "Discount Applied", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Invalid membership code.", "Invalid Code", JOptionPane.ERROR_MESSAGE);
                 }
 
                 // Display final total
                 totalLabel.setText("Total: $" + finalTotalPrice);
-                
+
                 // Confirm payment
                 JOptionPane.showMessageDialog(frame, "Payment Successful! Total: $" + finalTotalPrice, "Success", JOptionPane.INFORMATION_MESSAGE);
                 frame.dispose(); // Close payment window after successful payment
@@ -83,5 +92,29 @@ public class PaymentGUI extends JFrame {
         frame.add(payButton, BorderLayout.SOUTH);
         frame.add(panel, BorderLayout.CENTER);
         frame.setVisible(true);
+    }
+
+    // Method to check if the membership code exists in the database
+    private boolean checkMembershipCode(String membershipCode) {
+        String query = "SELECT COUNT(*) FROM membership WHERE membershipCode = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, membershipCode);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Return true if membership code exists
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if an error occurs or the code doesn't exist
+    }
+
+    // Main method to run the application
+    public static void main(String[] args) {
+        // Example cart with mock data (you can replace this with your actual cart object)
+        Map<String, ShopManagementGUI.CartItem> cart = null;  // You will need to pass a real cart here.
+        
+        // Run the payment GUI
+        SwingUtilities.invokeLater(() -> new PaymentGUI(cart));
     }
 }

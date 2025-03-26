@@ -1,11 +1,11 @@
 package Entity.InterfaceGui;
 
-import javax.swing.*;
 import Database.MySQLConnection;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import javax.swing.*;
 
 public class LoginPage extends JFrame implements ActionListener {
     private JTextField userField;

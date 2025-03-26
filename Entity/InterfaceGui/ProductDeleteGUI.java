@@ -1,12 +1,12 @@
 package Entity.InterfaceGui;
 
 import Database.MySQLConnection;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import javax.swing.*;
 
-public class ProductDeleteGUI extends JFrame {
+public class ProductDeleteGUI {
 
     private JFrame frame;
     private JComboBox<String> productListComboBox;
@@ -18,7 +18,7 @@ public class ProductDeleteGUI extends JFrame {
 
     public ProductDeleteGUI() {
         frame = new JFrame("Delete Product");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(400, 200);
         frame.setLayout(new BorderLayout());
 
@@ -28,6 +28,11 @@ public class ProductDeleteGUI extends JFrame {
         JButton deleteButton = new JButton("Delete Product");
         deleteButton.addActionListener(this::handleDeleteProduct);
         buttonPanel.add(deleteButton);
+
+        // Create and add the Back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(this::handleBackButton);
+        buttonPanel.add(backButton);
 
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -69,5 +74,16 @@ public class ProductDeleteGUI extends JFrame {
         } else {
             JOptionPane.showMessageDialog(frame, "No product selected!");
         }
+    }
+
+    // Handle the Back button action
+    private void handleBackButton(ActionEvent event) {
+        // Close the current frame
+        frame.dispose();
+
+        // You can add the logic to navigate to the previous screen
+        // For example, you can open a previous screen (like the main menu or product list) here.
+        // For simplicity, I'll just print a message.
+        System.out.println("Back to previous screen...");
     }
 }

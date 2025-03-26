@@ -14,6 +14,7 @@ public class ShopManagementGUI {
     private static JFrame frame;
     private static Map<String, CartItem> cart;
     private static JButton checkoutButton;
+    private static JButton backButton;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new ShopManagementGUI().createAndShowGUI());
@@ -21,7 +22,7 @@ public class ShopManagementGUI {
 
     public void createAndShowGUI() {
         frame = new JFrame("Shop Management");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
         cart = new HashMap<>();
@@ -67,6 +68,16 @@ public class ShopManagementGUI {
         checkoutButton.setVisible(true);
 
         rightPanel.add(checkoutButton);
+
+        // Back Button to return to previous page
+        backButton = new JButton("Back");
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setForeground(Color.WHITE);
+        backButton.setBackground(Color.RED);
+        backButton.setPreferredSize(new Dimension(180, 40));
+        backButton.addActionListener(e -> goBack());
+
+        rightPanel.add(backButton);
 
         frame.setVisible(true);
     }
@@ -166,6 +177,11 @@ public class ShopManagementGUI {
         rightPanel.add(checkoutButton, BorderLayout.SOUTH);
         rightPanel.revalidate();
         rightPanel.repaint();
+    }
+
+    private static void goBack() {
+        frame.dispose(); // Close current ShopManagementGUI
+        new MainPage("admin"); // Go back to the main page (adjust as needed)
     }
 
     static class CartItem {

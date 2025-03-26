@@ -3,44 +3,62 @@ package Entity.InterfaceGui;
 import java.awt.*;
 import javax.swing.*;
 
-public class ProductMain extends JFrame {
+public class ProductMain {
     private JButton addPButton;
     private JButton editPButton;
     private JButton deletePButton;
+    private JButton backButton;
 
     public ProductMain() {
-        setTitle("Manage Product");
-        setSize(500, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        JFrame frame = new JFrame("Manage Product");  // Create a JFrame object manually
+        frame.setSize(500, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
 
-        JPanel centerPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1, 10, 10));  // Added one more row for back button
         centerPanel.setBackground(new Color(240, 240, 240));
 
+        // Add Product button
         addPButton = new JButton("Add Product");
         addPButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        addPButton.addActionListener(e -> openWindow(new ProductInputGUI()));
+        addPButton.addActionListener(e -> {
+            frame.dispose();
+            new ProductInputGUI();
+        }); // Opens Product Input Form
 
+        // Edit Product button
         editPButton = new JButton("Edit Product");
         editPButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        editPButton.addActionListener(e -> openWindow(new ProductEditGUI()));
+        editPButton.addActionListener(e -> {
+            frame.dispose();
+            new ProductEditGUI();
+        }); // Opens Product Edit Form
 
+        // Delete Product button
         deletePButton = new JButton("Delete Product");
         deletePButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        deletePButton.addActionListener(e -> openWindow(new ProductDeleteGUI()));
+        deletePButton.addActionListener(e -> {
+            frame.dispose();
+            new ProductDeleteGUI();
+        }); // Opens Product Delete Form
 
+        // Back Button to return to the previous screen
+        backButton = new JButton("Back");
+        backButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        backButton.addActionListener(e -> {
+            frame.dispose(); // Close current window
+            new MainPage("admin"); // Go back to the main page (replace with the desired previous screen)
+        });
+
+        // Add buttons to the center panel
+        centerPanel.add(backButton);  // Back button first
         centerPanel.add(addPButton);
         centerPanel.add(editPButton);
         centerPanel.add(deletePButton);
 
-        add(centerPanel, BorderLayout.CENTER);
-        setVisible(true);
-    }
-
-    private void openWindow(JFrame frame) {
-        frame.setVisible(true);
-        dispose(); // Closes the current window when a new one opens
+        frame.add(centerPanel, BorderLayout.CENTER);  // Add the center panel to the frame
+        frame.setVisible(true);  // Make the frame visible
     }
 
     public static void main(String[] args) {

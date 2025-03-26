@@ -28,28 +28,34 @@ public class Pant extends Product {
         return material;
     }
 
-    // Setters with authentication and exception handling
-    public void setSize(String size, String password) throws UnauthorizedAccessException {
-        if (isAuthenticated(password)) {
+    // Setters with If-Else Logic (instead of exception handling)
+    public boolean setSize(String size, String password) {
+        if (!isAuthenticated(password)) {
+            System.out.println("Access Denied: Unauthorized modification of size.");
+            return false;
+        } else {
             this.size = size;
-        } else {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of size.");
+            return true;
         }
     }
 
-    public void setColor(String color, String password) throws UnauthorizedAccessException {
-        if (isAuthenticated(password)) {
+    public boolean setColor(String color, String password) {
+        if (!isAuthenticated(password)) {
+            System.out.println("Access Denied: Unauthorized modification of color.");
+            return false;
+        } else {
             this.color = color;
-        } else {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of color.");
+            return true;
         }
     }
 
-    public void setMaterial(String material, String password) throws UnauthorizedAccessException {
-        if (isAuthenticated(password)) {
-            this.material = material;
+    public boolean setMaterial(String material, String password) {
+        if (!isAuthenticated(password)) {
+            System.out.println("Access Denied: Unauthorized modification of material.");
+            return false;
         } else {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of material.");
+            this.material = material;
+            return true;
         }
     }
 

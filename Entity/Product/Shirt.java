@@ -36,35 +36,44 @@ public class Shirt extends Product {
         return material;
     }
 
-    // Secure Setters with Exception Handling
-    public void setSize(String size, String password) throws UnauthorizedAccessException {
+    // Secure Setters with If-Else Logic
+    public boolean setSize(String size, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized to change size.");
+            System.out.println("Access Denied: Unauthorized to change size.");
+            return false;
+        } else if (size == null || size.isEmpty()) {
+            System.out.println("Invalid size. It cannot be empty.");
+            return false;
+        } else {
+            this.size = size;
+            return true;
         }
-        if (size == null || size.isEmpty()) {
-            throw new IllegalArgumentException("Invalid size. It cannot be empty.");
-        }
-        this.size = size;
     }
 
-    public void setColor(String color, String password) throws UnauthorizedAccessException {
+    public boolean setColor(String color, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized to change color.");
+            System.out.println("Access Denied: Unauthorized to change color.");
+            return false;
+        } else if (color == null || color.isEmpty()) {
+            System.out.println("Invalid color. It cannot be empty.");
+            return false;
+        } else {
+            this.color = color;
+            return true;
         }
-        if (color == null || color.isEmpty()) {
-            throw new IllegalArgumentException("Invalid color. It cannot be empty.");
-        }
-        this.color = color;
     }
 
-    public void setMaterial(String material, String password) throws UnauthorizedAccessException {
+    public boolean setMaterial(String material, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized to change material.");
+            System.out.println("Access Denied: Unauthorized to change material.");
+            return false;
+        } else if (material == null || material.isEmpty()) {
+            System.out.println("Invalid material. It cannot be empty.");
+            return false;
+        } else {
+            this.material = material;
+            return true;
         }
-        if (material == null || material.isEmpty()) {
-            throw new IllegalArgumentException("Invalid material. It cannot be empty.");
-        }
-        this.material = material;
     }
 
     // Overriding equals() to compare objects based on field values

@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
 
-public class ProductEditGUI extends JFrame{
+public class ProductEditGUI {
 
     private JFrame frame;
     private JTextField nameField, priceField, qtyField, sizeField, colorField, materialBrandField;
@@ -21,7 +21,7 @@ public class ProductEditGUI extends JFrame{
 
     public ProductEditGUI() {
         frame = new JFrame("Edit Product");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(600, 500);
         frame.setLayout(new BorderLayout());
 
@@ -38,6 +38,11 @@ public class ProductEditGUI extends JFrame{
         JButton updateButton = new JButton("Update Product");
         updateButton.addActionListener(this::handleUpdateProduct);
         buttonPanel.add(updateButton);
+
+        // Create and add the Back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(this::handleBackButton);
+        buttonPanel.add(backButton);
 
         frame.add(formPanel, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
@@ -166,5 +171,16 @@ public class ProductEditGUI extends JFrame{
             e.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Error updating product.");
         }
+    }
+
+    // Handle the Back button action
+    private void handleBackButton(ActionEvent event) {
+        // Close the current frame
+        frame.dispose();
+
+        // You can add the logic to navigate to the previous screen
+        // For example, you can open a previous screen (like the main menu or product list) here.
+        // For simplicity, I'll just print a message.
+        System.out.println("Back to previous screen...");
     }
 }

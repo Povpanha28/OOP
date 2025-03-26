@@ -36,35 +36,44 @@ public class Shoes extends Product {
         return brand;
     }
 
-    // Secure Setters with Exception Handling
-    public void setSize(String size, String password) throws UnauthorizedAccessException {
+    // Setters with If-Else Logic (instead of exception handling)
+    public boolean setSize(String size, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of size.");
+            System.out.println("Access Denied: Unauthorized modification of size.");
+            return false;
+        } else if (size == null || size.isEmpty()) {
+            System.out.println("Invalid Size: Size cannot be null or empty.");
+            return false;
+        } else {
+            this.size = size;
+            return true;
         }
-        if (size == null || size.isEmpty()) {
-            throw new IllegalArgumentException("Invalid Size: Size cannot be null or empty.");
-        }
-        this.size = size;
     }
 
-    public void setColor(String color, String password) throws UnauthorizedAccessException {
+    public boolean setColor(String color, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of color.");
+            System.out.println("Access Denied: Unauthorized modification of color.");
+            return false;
+        } else if (color == null || color.isEmpty()) {
+            System.out.println("Invalid Color: Color cannot be null or empty.");
+            return false;
+        } else {
+            this.color = color;
+            return true;
         }
-        if (color == null || color.isEmpty()) {
-            throw new IllegalArgumentException("Invalid Color: Color cannot be null or empty.");
-        }
-        this.color = color;
     }
 
-    public void setBrand(String brand, String password) throws UnauthorizedAccessException {
+    public boolean setBrand(String brand, String password) {
         if (!isAuthenticated(password)) {
-            throw new UnauthorizedAccessException("Access Denied: Unauthorized modification of brand.");
+            System.out.println("Access Denied: Unauthorized modification of brand.");
+            return false;
+        } else if (brand == null || brand.isEmpty()) {
+            System.out.println("Invalid Brand: Brand cannot be null or empty.");
+            return false;
+        } else {
+            this.brand = brand;
+            return true;
         }
-        if (brand == null || brand.isEmpty()) {
-            throw new IllegalArgumentException("Invalid Brand: Brand cannot be null or empty.");
-        }
-        this.brand = brand;
     }
 
     // Overriding equals() to compare objects based on field values
